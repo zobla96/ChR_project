@@ -1,0 +1,65 @@
+#####===initialization.mac - going graphical===
+###=====G4State_PreInit=====
+/control/verbose 2
+/control/saveHistory
+/run/verbose 2
+/run/numberOfThreads 2
+
+###ChR_project
+###++++++++++++++++++++++++++++++++
+
+###check overLap while building geometry
+#/ChR_project/DetectorConsturction/checkOverlap true
+
+###divide radiator into layers
+#/ChR_project/DetectorConsturction/noOfRadLayers 1
+
+###change verbose
+#/ChR_project/DetectorConsturction/verboseLevel 0
+
+###rotate radiator (in deg by default)
+#/ChR_project/DetectorConsturction/radiatorAngle 22.0
+
+###change radiator half-thickness (in um by default)
+#/ChR_project/DetectorConsturction/radiatorThickness 100
+
+###change radiator material (G4_SILICON_DIOXIDE for electrons and Diamond for GenericIons)
+#/ChR_project/DetectorConsturction/radiatorMaterial Diamond
+
+###change detector radius (in um by default)
+#/ChR_project/DetectorConsturction/detectorRadius 35
+
+###change detector angle, relative to the radiator center (in deg by default)
+#/ChR_project/DetectorConsturction/detectorAngle 59.5
+
+###change detector distance, relative to the radiator center (in cm)
+#/ChR_project/DetectorConsturction/detectorDistance 37.6
+
+###change default cuts flag - by default it is true
+#/ChR_project/PhysicsList/useNonDefaultCuts false
+
+###change gamma-cut value (in um by default)
+#/ChR_project/PhysicsList/gammaRangeCut
+
+###change electron-cut value (in um by default)
+#/ChR_project/PhysicsList/electronRangeCut
+
+###change positron-cut value (in um by default)
+#/ChR_project/PhysicsList/positronRangeCut
+
+###change proton-cut value (in um by default)
+#/ChR_project/PhysicsList/protonRangeCut
+
+###select one of the available EM physics constructors
+### 0 - for "G4EmStandardPhysics"; 1 - for "G4EmStandardPhysics_option1"; 2 - for "G4EmStandardPhysics_option2";
+### 3 - for "G4EmStandardPhysics_option3"; 4 - for "G4EmStandardPhysics_option4"; 5 - for "G4EmLivermorePhysics";
+### 6 - for "G4EmLowEPPhysics"; 7 - for "G4EmPenelopePhysics"; 8 - for "G4EmStandardPhysicsGS";
+### 9 - for "G4EmStandardPhysicsSS" 10 - for "G4EmStandardPhysicsWVI"
+#/ChR_project/PhysicsList/selectEmPhysics 0
+###++++++++++++++++++++++++++++++++
+
+###=====G4State_Init=====
+/run/initialize
+
+###=====G4State_Idle=====
+/control/execute vis.mac

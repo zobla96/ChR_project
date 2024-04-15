@@ -1,0 +1,7 @@
+#####===run2.mac for trying (debugging) purposes===
+/control/verbose 0
+/run/verbose 0
+
+/run/numberOfThreads 2
+/run/initialize
+/run/beamOn 1000
