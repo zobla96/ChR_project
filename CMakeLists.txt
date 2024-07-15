@@ -28,10 +28,12 @@ target_link_libraries(executeChR_project ${Geant4_LIBRARIES})
 
 #Set (bound) macro files to a spectific name (myMacroList)
 set(myMacroList
+efficiency.csv
 initialization.mac
 run1.mac
 run2.mac
 vis.mac
+refractive_index_data.txt
 )
 
 #Go through macro files in myMacroList and copy them into the build folder

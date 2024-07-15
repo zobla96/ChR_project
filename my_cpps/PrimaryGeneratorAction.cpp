@@ -1,7 +1,7 @@
 #include "PrimaryGeneratorAction.hpp"
 
 //##########################################
-//#######         VERSION 0.2        #######
+//#######         VERSION 0.3        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -20,7 +20,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 : m_beamSigma(0._um),
 m_energy(855._MeV), m_zDistance(0), m_countdown(0),
 m_massNo(0), m_atomicNo(0), m_noOfParticles(1u),
-m_sigErrGauss{ 0., 0. }, m_sigBeamGauss{ 0., 0. }, m_divergenceGauss{ 0., 0. } {
+m_sigErrGauss{ 0., 0. }, m_sigBeamGauss{ 0., 0. }, m_sinBeamDivergenceTheta(0.) {
 	p_theGun = new G4ParticleGun{};
 	p_pGeneratorMessenger = new PrimaryGeneratorAction_Messenger{ this };
 }
@@ -40,11 +40,16 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 		x = m_sigBeamGauss(g_mtGen);
 		y = m_sigBeamGauss(g_mtGen);
 	}
-	if (m_divergenceGauss.sigma() != 0.) {
+	if (m_sinBeamDivergenceTheta > 0) {
 		double phi = G4UniformRand() * CLHEP::twopi;
-		double theta = m_divergenceGauss(g_mtGen);
+		//the correction of the bad CDF from v0.2
+		double sinTheta;
+		do {
+			sinTheta = m_sinBeamDivergenceTheta * std::sqrt(-2. * std::log(G4UniformRand()));
+		} while (sinTheta > 1.); //this should never happen for some reasonable divergence angles, but just in case!
+		double cosTheta = std::sqrt(1. - sinTheta * sinTheta);
 		//sin or cos phi is not important, it's 2*pi anyway
-		p_theGun->SetParticleMomentumDirection(G4ThreeVector{ std::sin(theta) * std::cos(phi), std::sin(theta) * std::sin(phi), std::cos(theta) });
+		p_theGun->SetParticleMomentumDirection(G4ThreeVector{ sinTheta * std::cos(phi), sinTheta * std::sin(phi), cosTheta });
 	}
 	else
 		p_theGun->SetParticleMomentumDirection(G4ThreeVector{ 0., 0., 1. });

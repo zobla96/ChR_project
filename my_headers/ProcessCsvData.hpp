@@ -3,7 +3,7 @@
 #define ProcessCsvData_hpp
 
 //##########################################
-//#######         VERSION 0.2        #######
+//#######         VERSION 0.3        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -397,8 +397,8 @@ void ProcessCsvData<Args...>::Proces_N_D_Data(const std::vector<double>& arg_bin
 		std::vector<size_t> checkerVector{};
 		DoCheckUpOfInput<Dimensions...>(checkerVector); //check for error input x_x
 	}
-	catch (std::ostringstream& err) {
-		G4Exception("ProcessCsvData<Args...>::Proces_N_D_Data", "WE1035", JustWarning, err);
+	catch (const std::string& err) {
+		G4Exception("ProcessCsvData<Args...>::Proces_N_D_Data", "WE1035", JustWarning, err.c_str());
 		return;
 	}
 	//Now if efficiency should be used
@@ -576,8 +576,7 @@ template <size_t NextDim, size_t... RestDim>
 void ProcessCsvData<Args...>::DoCheckUpOfInput(std::vector<size_t>& checkerVector) const {
 	checkerVector.emplace_back(NextDim);
 	if (std::is_same_v<std::tuple_element_t<NextDim, tuple_t>, std::string>) {
-		std::ostringstream err;
-		err << "The current version of the class does not support std::string processing.\nHowever, this feautre will be added in the future, but only for 1D case.\nIf you have any why I should make it possible to use N_D strings, please let me know via the provided contact\nProceeding code without .csv data processing you requested!\n";
+		std::string err = "The current version of the class does not support std::string processing.\nHowever, this feautre will be added in the future, but only for 1D case.\nIf you have any why I should make it possible to use N_D strings, please let me know via the provided contact\nProceeding code without .csv data processing you requested!\n";
 		throw err;
 	}
 	if constexpr (sizeof...(RestDim) == 0) {
@@ -585,17 +584,16 @@ void ProcessCsvData<Args...>::DoCheckUpOfInput(std::vector<size_t>& checkerVecto
 		for (size_t i : checkerVector)
 			checkUniqueSet.insert(i);
 		if (checkerVector.size() != checkUniqueSet.size()) {
-			std::ostringstream err;
-			err << "While calling methods to process data and obtain final N_D data, you must use unique non-type template parameter values!\n"
-				<< "That means, e.g., you can use <0, 1, 2, 5, 3>, but you can't <0, 1, 2, 5, 1> ('1' is not unique)!\n"
-				<< "However, your input was:\n<";
+			std::string err = "While calling methods to process data and obtain final N_D data, you must use unique non-type template parameter values!\n";
+			err += "That means, e.g., you can use <0, 1, 2, 5, 3>, but you can't <0, 1, 2, 5, 1> ('1' is not unique)!\n";
+			err += "However, your input was:\n<";
 			for (auto i = checkerVector.begin(); i != checkerVector.end(); i++) {
 				if (i == checkerVector.end() - 1)
-					err << *i;
+					err += *i;
 				else
-					err << *i << ", ";
+					err += *i + ", ";
 			}
-			err << ">\nProceeding code without .csv data processing you requested!\n";
+			err += ">\nProceeding code without .csv data processing you requested!\n";
 			throw err;
 		}
 	}

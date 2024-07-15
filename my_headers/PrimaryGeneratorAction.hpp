@@ -3,7 +3,7 @@
 #define PrimaryGeneratorAction_hpp
 
 //##########################################
-//#######         VERSION 0.2        #######
+//#######         VERSION 0.3        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -61,7 +61,7 @@ private:
 	unsigned short m_countdown;
 	std::normal_distribution<double> m_sigBeamGauss;
 	std::normal_distribution<double> m_sigErrGauss;
-	std::normal_distribution<double> m_divergenceGauss;
+	double m_sinBeamDivergenceTheta;
 	//For some reason, I've decided to build this class as I have
 	//That means most of the /gun/ functionality is usless
 	G4ParticleGun* p_theGun = nullptr;
@@ -103,7 +103,7 @@ void PrimaryGeneratorAction::SetSigErrParameter(const double val) {
 	m_sigErrGauss.param(std::normal_distribution<double>::param_type{0., val});
 }
 void PrimaryGeneratorAction::SetDivergenceSigma(const double val) {
-	m_divergenceGauss.param(std::normal_distribution<double>::param_type{ 0., val});
+	m_sinBeamDivergenceTheta = std::sin(val);
 }
 
 //=======Get inlines=======
@@ -111,7 +111,7 @@ double PrimaryGeneratorAction::GetBeamSigma() const {
 	return m_beamSigma;
 }
 double PrimaryGeneratorAction::GetDivSigma() const {
-	return m_divergenceGauss.sigma();
+	return std::asin(m_sinBeamDivergenceTheta);
 }
 double PrimaryGeneratorAction::GetParticleEnergy() const {
 	return m_energy;

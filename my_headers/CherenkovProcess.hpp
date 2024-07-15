@@ -3,7 +3,7 @@
 #define CherenkovProcess_hpp
 
 //##########################################
-//#######         VERSION 0.2        #######
+//#######         VERSION 0.3        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -321,9 +321,8 @@ void CherenkovProcess<T>::ProcessDescription(std::ostream& outStream) const {
 				<< "To see details about this specific C++ class, use CherenkovProcess<T>::DumpInfo() method\n\n"
 				<< "Some English literature I know of that one might find interesting and is a nice summary of everything:\n"
 				<< "1. J.V. Jelley, Cherenkov radiation and its Applications, Pergamon Press, New York, 1958\n"
-				<< "2. B.M. Bolotovskii \"Theory of Cherenkov radiation(III)\", Sov. Phys. Usp. 4(5), (1961) 781-811\n"
-				<< "3. B.M. Bolotovskii \"Vavilov-Cherenkov radiation: its discovery and application\" Phys. Usp. 52(11), (2009) 1099-1110\n"
-				<< "4. A.P. Kobzev \"On the radiation mechanism of a uniformly moving charge\", Phys. Part. Nucl. 45(3), (2014) 628-653\n\n"
+				<< "2. B.M. Bolotovskii \"Vavilov-Cherenkov radiation: its discovery and application\" Phys. Usp. 52(11), (2009) 1099-1110\n"
+				<< "3. A.P. Kobzev \"On the radiation mechanism of a uniformly moving charge\", Phys. Part. Nucl. 45(3), (2014) 628-653\n\n"
 				<< "End of CherenkovProcess<T>::ProcessDescription()\n";
 	outStream << std::setw(116) << '\n';
 	outStream << std::endl;

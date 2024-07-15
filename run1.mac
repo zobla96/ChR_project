@@ -92,7 +92,7 @@
 #/ChR_project/PrimaryGenerator/beamSigmaError 0
 
 ###change Gaussian sigma for the beam divergence (in mrad by default)
-#/ChR_project/PrimaryGenerator/divergenceSigma
+#/ChR_project/PrimaryGenerator/thetaBeamDivergence
 
 ###change primary-particle energy (full energy for e-, and energy per nucleon for GenericIons) (in MeV by default)
 #/ChR_project/PrimaryGenerator/particleEnergy 855

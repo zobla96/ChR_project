@@ -1,7 +1,7 @@
 #include "PrimaryGeneratorAction_Messenger.hpp"
 
 //##########################################
-//#######         VERSION 0.2        #######
+//#######         VERSION 0.3        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -36,13 +36,13 @@ PrimaryGeneratorAction_Messenger::PrimaryGeneratorAction_Messenger(PrimaryGenera
 	p_beamSigmaError->SetRange("beamSigmaError>0.");
 	p_beamSigmaError->AvailableForStates(G4State_Idle);
 
-	p_divSigma = new G4UIcmdWithADoubleAndUnit{ "/ChR_project/PrimaryGenerator/divergenceSigma", this };
-	p_divSigma->SetGuidance("Used to change the PrimaryGeneratorAction::m_divSigma.");
-	p_divSigma->SetGuidance("It is used to simlate beam divergence as a normal distribution with the given sigma.");
-	p_divSigma->SetParameterName("divSigmaValue", true);
+	p_divSigma = new G4UIcmdWithADoubleAndUnit{ "/ChR_project/PrimaryGenerator/thetaBeamDivergence", this };
+	p_divSigma->SetGuidance("Used to change the PrimaryGeneratorAction::m_sinBeamDivergenceTheta.");
+	p_divSigma->SetGuidance("It is used to simlate beam divergence as a normal distribution with the given sigma of the angle theta.");
+	p_divSigma->SetParameterName("thetaBeamDivergence", true);
 	p_divSigma->SetDefaultUnit("mrad");
 	p_divSigma->SetDefaultValue(0.);
-	p_divSigma->SetRange("divSigmaValue>0.");
+	p_divSigma->SetRange("thetaBeamDivergence>0.");
 	p_divSigma->AvailableForStates(G4State_Idle);
 
 	p_energy = new G4UIcmdWithADoubleAndUnit{ "/ChR_project/PrimaryGenerator/particleEnergy", this };
