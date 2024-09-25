@@ -1,0 +1,266 @@
+##### run1.mac - for serious runs #####
+
+#####################################
+###### G4State_PreInit  START #######
+#####################################
+/control/verbose 0
+/run/verbose 0
+/run/numberOfThreads 8
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_app_exe PreInit START
+#####++++++++++++++++++++++++++++++++
+
+### Used to change the radiator angle relative to the primary beam
+### Default unit: deg
+#/ChR_project/DetectorConstruction/radiatorAngle <radiatorAngle> [<radiatorAngleUnit>]
+
+### Used to change the radiator half-thickness (experimental full-thickness: 200 um)
+### Defauly unit: um (micrometer)
+#/ChR_project/DetectorConstruction/radiatorThickness <radiatorThickness> [<radiatorThicknessUnit>]
+
+### Used to change the material of the radiator ("Diamond" is needed for low-energy ions)
+### Default: G4_SILICON_DIOXIDE (NOTE: it is used as "quartz")
+### Candidates: "G4_SILICON_DIOXIDE" and "Diamond"
+#/ChR_project/DetectorConstruction/radiatorMaterial [<materialName>]
+
+### Used to divide the radiator into a specific number of layers. This can be used if
+### one wants to obtain energy loss as a function of penetration depth (likely for ions)
+#/ChR_project/DetectorConstruction/noOfRadLayers <noOfRadLayers>
+
+### Used to change the detector radius (experimental detector radius: 35 um)
+### Defauly unit: um (micrometer)
+#/ChR_project/DetectorConstruction/detectorRadius <detectorRadius> [<detectorRadiusUnit>]
+
+### Used to change the detector angle (experimental detector angle: 59.5 deg)
+### Default unit: deg
+#/ChR_project/DetectorConstruction/detectorAngle <detectorAngle> [<detectorAngleUnit>]
+
+### Used to change the detector distance relative to the radiator (experimental detector distance: 37.6 cm)
+### Default unit: cm (centimeter)
+#/ChR_project/DetectorConstruction/detectorDistance <detectorDistance> [<detectorDistanceUnit>]
+
+### Used to change the verbose level of the detector construction
+### Default: 1 (initialized as 0)
+#/ChR_project/DetectorConstruction/verboseLevel [<verboseLevel>]
+
+### Used to change the checkOverlap flag of the detector construction
+### Default value: false (initialized as "true")
+#/ChR_project/DetectorConstruction/checkOverlap [<checkOverlap>]
+
+
+### Used to set gamma-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/gammaRangeCut <gammaCut> [<gammaCutUnit>]
+
+### Used to set electron-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/electronRangeCut <electronCut> [<electronCutUnit>]
+
+### Used to set positron-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/positronRangeCut <positronCut> [<positronCutUnit>]
+
+### Used to set proton-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/protonRangeCut <protonCut> [<protonCutUnit>]
+
+### Used to change electromagnetic physics that will be used. Options:
+### 0. G4EmStandardPhysics; 1. G4EmStandardPhysics_option1; 2. G4EmStandardPhysics_option2;
+### 3. G4EmStandardPhysics_option3; 4. G4EmStandardPhysics_option4; 5. G4EmLivermorePhysics;
+### 6. G4EmLowEPPhysics; 7. G4EmPenelopePhysics; 8. G4EmStandardPhysicsGS;
+### 9. G4EmStandardPhysicsSS; 10. G4EmStandardPhysicsWVI
+#/ChR_project/PhysicsList/selectEmPhysics <emPhysicsListOptionID>
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_app_exe PreInit END
+#####++++++++++++++++++++++++++++++++
+
+#####################################
+####### G4State_PreInit  END ########
+#####################################
+
+#####################################
+####### G4State_Init   START ########
+#####################################
+
+/run/initialize
+
+#####################################
+######## G4State_Init   END #########
+#####################################
+
+#####################################
+####### G4State_Idle   START ########
+#####################################
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_process_lib Idle START
+#####++++++++++++++++++++++++++++++++
+
+##### G4OpticalPhysics_option1 START
+#####________________________________
+
+### To print information about "G4StandardChRProcess"
+#/process/optical/stdChRProcess/dumpInfo
+
+### To print information about what Cherenkov radiation is
+#/process/optical/stdChRProcess/processDescription
+
+### To print if a particle called "particleName" can generate ChR photons
+#/process/optical/stdChRProcess/isApplicable <particleName>
+
+### To print the minimal energy for a particle called "particleName" to
+### produce Cherenkov photons in the material "materialName"
+#/process/optical/stdChRProcess/minEnergy <particleName> <materialName>
+
+### To change useEnergyLoss flag - "true" to use the conservation-energy law
+### Default value: "true" (initialized as "false")
+#/process/optical/stdChRProcess/useEnergyLoss [<newFlagValue>]
+
+### ChR is emitted from betaMin to betaMax, the interval divided into noOfBetaSteps
+### Used to chage the noOfBetaSteps. Note: "betaStepNodes = noOfBetaSteps + 1"
+### Setting new noOfBetaSteps means ChR physics tables will be reloaded!
+#/process/optical/stdChRProcess/noOfBetaSteps <noOfBetaSteps>
+
+### Used to print loaded physics tables for Cherenkov radiation
+### printLevel == 0 -> print only basic available information about registered physics tables
+### printLevel == 1 -> print standard + exotic RIndex CDF values
+### printLevel >= 2 -> print all available information about registered physics tables
+### materialName - omitted -> prints physics tables for all registered materials
+### materialName - provided -> prints physics tables for materialName
+### Default printLevel: 0
+#/process/optical/stdChRProcess/printChRPhysicsVector [<printLevel>] [<materialName>]
+
+### Used to change whether exotic refractive indices will be used for a
+### specific material (boolCondition == true) or not (boolCondition == false).
+### IF YOU CHANGE THE NUMBER OF BETA STEPS BY COMMAND:
+### "/process/optical/stdChRProcess/noOfBetaSteps"
+### AFTER USING THIS COMMAND, YOU WILL LOSE THE RESULT OF THIS COMMAND!
+#/process/optical/stdChRProcess/changeUseOfExoticRIndex <materialName> <boolCondition>
+
+#####________________________________
+##### G4OpticalPhysics_option1 END
+
+
+
+##### G4OpticalPhysics_option2 START
+#####________________________________
+
+### To print information about G4CherenkovProcess and all registered models
+#/process/optical/G4ChRProcess/dumpInfo
+
+### To print information about what Cherenkov radiation is
+#/process/optical/G4ChRProcess/processDescription
+
+### To print if a particle called "particleName" can generate ChR photons
+#/process/optical/G4ChRProcess/isApplicable <particleName>
+
+### To print the minimal energy for a particle called "particleName" to
+### produce Cherenkov photons in the material "materialName"
+#/process/optical/G4ChRProcess/minEnergy <particleName> <materialName>
+
+
+### To change useEnergyLoss flag - "true" to use the conservation-energy law
+### Default value: "true" (initialized as "false")
+#/process/optical/G4ChRProcess/Models/useEnergyLossInModels [<newFlagValue>]
+
+### ChR is emitted from betaMin to betaMax, the interval divided into noOfBetaSteps
+### Used to chage the noOfBetaSteps. Note: "betaStepNodes = noOfBetaSteps + 1"
+### Setting new noOfBetaSteps means ChR physics tables will be reloaded!
+#/process/optical/G4ChRProcess/Models/noOfBetaSteps <noOfBetaSteps>
+
+### To change verboseLevel of registered ChR models
+### Default: 1 (initialized as 0)
+#/process/optical/G4ChRProcess/Models/changeModelVerbose [<verboseLevel>]
+
+### Used to print loaded physics tables for Cherenkov radiation
+### printLevel == 0 -> print only basic available information about registered physics tables
+### printLevel == 1 -> print standard + exotic RIndex CDF values
+### printLevel >= 2 -> print all available information about registered physics tables
+### materialName - omitted -> prints physics tables for all registered materials
+### materialName - provided -> prints physics tables for materialName
+### Default printLevel: 0
+#/process/optical/G4ChRProcess/Models/printBaseChRPhysicsVector [<printLevel>] [<materialName>]
+
+### Used to change the mutliplier 'K' for G4ThinTargetChR_Model. The K is used
+### for changing the widening of the cone for finite thickness targets
+#/process/optical/G4ChRProcess/Models/ThinChRModelMultiplier <valueK>
+
+
+### Used to change the logical thickness for ChR models that can consider finite
+### thickness radiators. It is applied and registered for specific logical volumes
+### Default unit: um (micrometer)
+#/process/optical/G4ChRProcess/extraOptParams/setLVThickness <logicVolumeName> <thicknessValue> [<thicknessUnit>]
+
+### Used to rescan added logical volumes. This might be useful if one has changed
+### the geometry in G4State_Idle... otherwise, the current ChR might fail
+#/process/optical/G4ChRProcess/extraOptParams/scanForNewLV
+
+### Used to set an ChR model ID (its place in a vector of registered ChR models) that should
+### be executed in a specific logical volume named "logicalVolumeName"
+#/process/optical/G4ChRProcess/extraOptParams/ChRexecuteModelID <logicalVolumeName> <modelID>
+
+### You should use this command to turn on/off use of an exotic refractive index for a
+### specific logical volume. Exotic refractive indices are more processor heavy, so they
+### should not be used when not necessary. Cherenkov radiation is emitted in standard
+### E = const, if this value is set to 'false'.
+#/process/optical/G4ChRProcess/extraOptParams/exoticRIndex <LV_name> <exoticRIndexFlag>
+
+### Used to print additional data (G4CherenkovMatData) attributed to logical volumes
+### LV_name - omitted -> print the data for all logical volumes
+#/process/optical/G4ChRProcess/extraOptParams/printChRMatData [<LV_name>]
+
+#####________________________________
+##### G4OpticalPhysics_option2 END
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_process_lib Idle END
+#####++++++++++++++++++++++++++++++++
+
+
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_app_exe Idle START
+#####++++++++++++++++++++++++++++++++
+
+### Used to set Gaussian distribution sigma that is used to generate primary beams
+### of a specific transverse sizes
+### Default unit: um (micrometer)
+#/ChR_project/PrimaryGenerator/beamSigma <sigmaGauss> [<sigmaGaussUnit>]
+
+### Used to change beam divergence.
+### It is considered as Gaussian distribution sigma of angle "theta" for divergence
+### Default unit: mrad
+#/ChR_project/PrimaryGenerator/thetaBeamDivergence <thetaBeamDivergence> [<thetaBeamDivergenceUnit>]
+
+### Used to set energy of primary particles.
+### NOTE: this command sets full kinetic energy for e- beams and energy/nucleon for ion beams
+### Default unit: MeV
+#/ChR_project/PrimaryGenerator/particleEnergy <primaryEnergy> [<primaryEnergyUnit>]
+
+### Used to set number of primary particles that will be fired per event
+#/ChR_project/PrimaryGenerator/noOfPrimaryParticles <noOfPrimaries>
+
+### Used to set mass number of primary ions (when using ion beams)
+### NOTE: while "atomicNo == 0", massNo will not be used!
+#/ChR_project/PrimaryGenerator/massNo <massNo>
+
+### Used to set atomic number of primary ions (when using ion beams)
+### NOTE: while "massNo == 0", atomicNo will not be used!
+#/ChR_project/PrimaryGenerator/atomicNo <atomicNo>
+
+
+### Used to change verboseLevel of SteppingAction
+### Default: 1 (initialized as 0)
+#/ChR_project/SteppingAction/verboseLevel [<verboseLevel>]
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_app_exe Idle END
+#####++++++++++++++++++++++++++++++++
+
+#####################################
+######## G4State_Idle   END #########
+#####################################
+
+/run/beamOn 1000000000
