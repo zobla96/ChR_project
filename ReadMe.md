@@ -113,4 +113,5 @@ Cherenkov radiation for non-relativistic ion beam diagnostics, JINST 19 (2024) C
 DOI: [10.1088/1748-0221/19/06/C06015](https://iopscience.iop.org/article/10.1088/1748-0221/19/06/C06015)
 
 [^7]: B. Đurnić, A. Potylitsyn, A. Bogdanov, S. Gogolev, On the rework and
-development of new Geant4 Cherenkov models, (in press)
+development of new Geant4 Cherenkov models, arXiv:2409.20411 [physics.acc-ph] (2024);
+DOI: [10.48550/arXiv.2409.20411](https://doi.org/10.48550/arXiv.2409.20411)

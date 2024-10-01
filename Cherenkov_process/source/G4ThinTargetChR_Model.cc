@@ -257,7 +257,7 @@ void G4ThinTargetChR_Model::DumpModelInfo() const {
 		<< "1. R.L.Mather, Cherenkov radiation from protons and measurement of proton velocity and kinetic\n"
 		<< "energy, Phys. Rev. 84(2) (1951) 181–190; DOI: 10.1103/PhysRev.84.181\n"
 		<< "2. B.Djurnic, A.Potylitsyn, A.Bogdanov, S.Gogolev, On the rework and development of new Geant4\n"
-		<< "Cherenkov models, (in press); DOI: (in press)\n\n"
+		<< "Cherenkov models, arXiv:2409.20411 [physics.acc-ph] (2024); DOI: 10.48550/arXiv.2409.20411\n\n"
 		<< "NOTE1: this model currently supports only optical photons and does not generate photons in the X - ray\n"
 		<< "region. On the other hand, the base class \"G4BaseChR_Model\" removes all the limitations that exist in\n"
 		<< "the G4Cerenkov class, meaning that the model can consider any kind of refractive index dependencies.\n\n"
