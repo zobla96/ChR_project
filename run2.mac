@@ -39,9 +39,7 @@
 #/process/optical/G4ChRProcess/Models/noOfBetaSteps <noOfBetaSteps>
 #/process/optical/G4ChRProcess/Models/changeModelVerbose [<verboseLevel>]
 #/process/optical/G4ChRProcess/Models/printBaseChRPhysicsVector [<printLevel>] [<materialName>]
-#/process/optical/G4ChRProcess/Models/ThinChRModelMultiplier <valueK>
 
-#/process/optical/G4ChRProcess/extraOptParams/setLVThickness <logicVolumeName> <thicknessValue> [<thicknessUnit>]
 #/process/optical/G4ChRProcess/extraOptParams/scanForNewLV
 #/process/optical/G4ChRProcess/extraOptParams/ChRexecuteModelID <logicalVolumeName> <modelID>
 #/process/optical/G4ChRProcess/extraOptParams/exoticRIndex <LV_name> <exoticRIndexFlag>

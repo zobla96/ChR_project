@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -17,22 +17,15 @@ Read the "DumpModelInfo" method
 #ifndef G4ThinTargetChR_Model_hh
 #define G4ThinTargetChR_Model_hh
 
+//G4 headers
 #include "G4BaseChR_Model.hh"
-#include "G4UImessenger.hh"
+//std:: headers
+#include <unordered_map>
 
-class G4ThinTargetChR_Model;
-class G4UIcommand;
-class G4UIcmdWithADouble;
-
-class G4ThinTargetChR_ModelMessenger : public G4UImessenger {
-public:
-	G4ThinTargetChR_ModelMessenger(G4ThinTargetChR_Model*);
-	virtual ~G4ThinTargetChR_ModelMessenger();
-	virtual void SetNewValue(G4UIcommand* uiCmd, G4String aStr) override;
-private:
-	G4ThinTargetChR_Model* p_thinChRTarget = nullptr;
-	G4UIcmdWithADouble* p_multiplierCoef = nullptr;
-};
+class G4VTouchable;
+class G4VPhysicalVolume;
+class G4AffineTransform;
+class G4Box;
 
 class G4ThinTargetChR_Model : public G4BaseChR_Model {
 public:
@@ -46,25 +39,22 @@ public:
 
 	[[nodiscard]] virtual G4VParticleChange* PostStepModelDoIt(const G4Track&, const G4Step&, const G4CherenkovMatData&) override;
 	virtual void DumpModelInfo() const override;
-
-	//=======Set inlines=======
-	inline void SetMultiplierCoef(const G4double);
-
-	//=======Get inlines=======
-	inline G4double GetMultiplierCoef() const;
+	virtual void BuildModelPhysicsTable(const G4ParticleDefinition&) override;
 private:
-	G4double m_coef; // determines (multiplies) widening of the lateral surface for thin targets
-	std::unique_ptr<G4ThinTargetChR_ModelMessenger> m_theMessenger;
+	// Helper methods to simplify read of the code
+	G4bool FindParticleEntryAndExitPoints(
+			G4ThreeVector& entryPoint,
+			G4ThreeVector& exitPoint,
+			const G4ThreeVector& localMiddlePoint,
+			const G4ThreeVector& localDirection,
+			const G4ThreeVector& localPrePoint,
+			const G4CherenkovMatData& aChRMatData) const;
+	G4double CalculateGaussSigmaDistance(
+			const G4ThreeVector& entryPoint,
+			const G4ThreeVector& exitPoint,
+			const G4ThreeVector& photonDirection,
+			const G4CherenkovMatData& matData) const;
+	void SetBoxPhysicsTableParameters(G4CherenkovMatData&, const G4ThreeVector&) const;
 };
-
-//=======Set inlines=======
-void G4ThinTargetChR_Model::SetMultiplierCoef(const G4double aValue) {
-	m_coef = aValue;
-}
-
-//=======Get inlines=======
-G4double G4ThinTargetChR_Model::GetMultiplierCoef() const {
-	return m_coef;
-}
 
 #endif // !G4ThinTargetChR_Model_hh

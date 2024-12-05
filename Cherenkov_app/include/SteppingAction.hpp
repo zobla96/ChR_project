@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -33,7 +33,7 @@ class SteppingAction_Messenger;
 
 class SteppingAction final : public G4UserSteppingAction {
 public:
-	SteppingAction(EventAction*, TrackingAction*, const unsigned char verbose = 0);
+	SteppingAction(const unsigned char verbose = 0);
 	~SteppingAction() override;
 	void UserSteppingAction(const G4Step*) override;
 	//=======Set inlines=======
@@ -41,13 +41,9 @@ public:
 	//=======Get inlines=======
 	[[nodiscard]] inline unsigned char GetVerboseLevel() const;
 private:
-	TrackingAction* p_trackingAction = nullptr;
-	EventAction* p_eventAction = nullptr;
 	SteppingAction_Messenger* p_steppingMessenger = nullptr;
 	G4RotationMatrix m_rotToDetSystem; //passive rot
 	G4ThreeVector m_trToDetSurfSystem;
-	const unsigned char& r_noOfRadLayers;
-	const unsigned int& r_noOfPrimaries;
 	unsigned char m_verboseLevel;
 };
 

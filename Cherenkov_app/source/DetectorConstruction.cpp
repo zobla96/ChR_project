@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -13,14 +13,7 @@ beginChR
 //=========public ChR::DetectorConstruction:: methods=========
 
 DetectorConstruction::~DetectorConstruction() {
-	delete p_detConstrMessenger;
-}
-
-DetectorConstruction* DetectorConstruction::GetInstance() {
-	static DetectorConstruction* theInstance;
-	if (!theInstance)
-		theInstance = new DetectorConstruction{};
-	return theInstance;
+	delete p_detConstructionMessenger;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
@@ -44,7 +37,7 @@ m_detectorDistance(37.6_cm),
 m_noOfRadLayers(1),
 m_verbose(0),
 m_checkOverlap(true) {
-	p_detConstrMessenger = new DetectorConstruction_Messenger{ this };
+	p_detConstructionMessenger = new DetectorConstruction_Messenger{ this };
 	LoadMaterials();
 }
 
@@ -84,10 +77,11 @@ void DetectorConstruction::LoadRadiator() {
 	G4LogicalVolume* radiatorLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLogic" };
 #else
 	G4LogicalVolume* radiatorLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial("fake_quartz"), "radiatorLogic" };
+	//G4LogicalVolume* radiatorLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLogic" };
 #endif // standardRun
 	if (dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList())->GetPhysics("OpticalPhysics_op2")) {
 		auto extraOptParams = G4ExtraOpticalParameters::GetInstance();
-		extraOptParams->AddNewChRMatData(radiatorLogic, G4CherenkovMatData{ 1, 2 * m_radiatorThickness });
+		extraOptParams->AddNewChRMatData(radiatorLogic, G4CherenkovMatData{ 1 });
 	}
 	//in case we divide the radiator into layers - an envelope
 	//otherwise a radiator
@@ -97,24 +91,24 @@ void DetectorConstruction::LoadRadiator() {
 	G4Region* radiatorRegion = new G4Region("radiatorRegion");
 	radiatorRegion->AddRootLogicalVolume(radiatorLogic);
 	//now dividing for needs of layered detector
-	if (m_noOfRadLayers > 1) {
-		//layerThickness -> half-thickness
-		double layerThickness = m_radiatorThickness / m_noOfRadLayers;
-		G4Tubs* radLayerSolid = new G4Tubs{ "radiatorLayerSolid", 0., 3._cm, layerThickness, 0., 360._deg };
+	if (m_noOfRadLayers <= 1)
+		return;
+	//layerThickness -> half-thickness
+	double layerThickness = m_radiatorThickness / m_noOfRadLayers;
+	G4Tubs* radLayerSolid = new G4Tubs{ "radiatorLayerSolid", 0., 3._cm, layerThickness, 0., 360._deg };
 #ifdef standardRun
-		G4LogicalVolume* radLayerLogic = new G4LogicalVolume{ radLayerSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLayerLogic" };
+	G4LogicalVolume* radLayerLogic = new G4LogicalVolume{ radLayerSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLayerLogic" };
 #else
-		G4LogicalVolume* radLayerLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial("fake_quartz"), "radiatorLayerLogic" };
+	G4LogicalVolume* radLayerLogic = new G4LogicalVolume{ radLayerSolid, G4Material::GetMaterial("fake_quartz"), "radiatorLayerLogic" };
 #endif // standardRun
-		radLayerLogic->SetVisAttributes(m_visAttrHide.get());
-		if (dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList())->GetPhysics("OpticalPhysics_op2")) {
-			auto extraOptParams = G4ExtraOpticalParameters::GetInstance();
-			extraOptParams->AddNewChRMatData(radLayerLogic, G4CherenkovMatData{ 1, 2 * m_radiatorThickness });
-		}
-		for (unsigned char i = 0; i < m_noOfRadLayers; i++) {
-			double zCoord = -m_radiatorThickness + (2 * i + 1) * layerThickness;
-			new G4PVPlacement{ nullptr, G4ThreeVector{ 0.,0.,zCoord }, "radiatorLayerPhys", radLayerLogic, radiatorPhys, false, i, m_checkOverlap };
-		}
+	radLayerLogic->SetVisAttributes(m_visAttrHide.get());
+	if (dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList())->GetPhysics("OpticalPhysics_op2")) {
+		auto extraOptParams = G4ExtraOpticalParameters::GetInstance();
+		extraOptParams->AddNewChRMatData(radLayerLogic, G4CherenkovMatData{ 1 });
+	}
+	for (unsigned char i = 0; i < m_noOfRadLayers; i++) {
+		double zCoord = -m_radiatorThickness + (2 * i + 1) * layerThickness;
+		new G4PVPlacement{ nullptr, G4ThreeVector{ 0.,0.,zCoord }, "radiatorLayerPhys", radLayerLogic, radiatorPhys, false, i, m_checkOverlap };
 	}
 }
 

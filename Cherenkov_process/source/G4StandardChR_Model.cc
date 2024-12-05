@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -75,7 +75,7 @@ G4VParticleChange* G4StandardChR_Model::PostStepModelDoIt(const G4Track& aTrack,
 	G4double maxEnergy = 0.;
 	// or would it be better to keep it in stack and check condition *1* every time in the following 'for'??
 	std::vector<std::pair<G4double, G4double>>* bigBetaCDFVector = nullptr;
-	if (aChRMatData.m_exoticRIndex) {
+	if (aChRMatData.GetExoticRIndex()) {
 		if (beta > m_ChRPhysDataVec[materialID].m_aroundBetaValues.back().m_betaValue) { // *1*
 			bigBetaCDFVector = new std::vector<std::pair<G4double, G4double>>{};
 			std::vector<G4ThreeVector>* bigBetaVec = m_ChRPhysDataVec[materialID].p_bigBetaCDFVector;
@@ -133,8 +133,8 @@ G4VParticleChange* G4StandardChR_Model::PostStepModelDoIt(const G4Track& aTrack,
 				cosTheta = 1. / (sampledRI * beta); //might give > 1. for strange n(E) functions
 				sin2Theta = (1.0 - cosTheta) * (1.0 + cosTheta);
 				if (sin2Theta <= 0.) {
-					//the following 'if' is to prevent bad distribution if the user modified an almost non-exotic RIndex
-					if (!aChRMatData.m_exoticFlagInital)
+					//the following 'if' is to prevent bad distributions if the user modified an almost non-exotic RIndex
+					if (!aChRMatData.GetExoticInitialFlag())
 						minEnergy = sampledEnergy;
 					continue;
 				}
@@ -220,19 +220,19 @@ G4VParticleChange* G4StandardChR_Model::PostStepModelDoIt(const G4Track& aTrack,
 }
 
 void G4StandardChR_Model::DumpModelInfo() const {
-	std::cout
-		<< "\"G4StandardChR_Model\" is a Cherenkov radiation model that's based on the original Frank-Tamm theory.\n"
-		<< "That means Cherenkov photons are emitted along the lateral surface of the cone relative to a charged\n"
-		<< "particle that passes through the material. The cone angle can be expressed as:\n"
-		<< "cos(ThetaChR) = 1 / (beta * RIndex).\n"
-		<< "To read more about the first Frank-Tamm theory, see:\n"
-		<< "I.M.Frank, I.E.Tamm, Coherent visible radiation of fast electrons passing through matter,\n"
-		<< "Dokl. Acad. Sci. USSR 14 (1937) 109-114\n\n"
-		<< "NOTE1: this model currently supports only optical photons and does not generate photons in the X-ray\n"
-		<< "region. On the other hand, the base class \"G4BaseChR_Model\" removes all the limitations that exist in\n"
-		<< "the G4Cerenkov class, meaning that the model can consider any kind of refractive index dependencies.\n\n"
-		<< "NOTE2: this model should generate good results as long as the considered radiator can be approximated\n"
-		<< "as \"ideal\", i.e., the Frank-Tamm theory is written for an infinitely thick emitter. If thin radiators\n"
-		<< "are considered, one should consider other models. For instance, check \"G4ThinTargetChR_Model\", which\n"
-		<< "allows one to consider thin plate-like radiators (one finite and two infinite dimensions).\n";
+	std::cout <<
+		"\"G4StandardChR_Model\" is a Cherenkov radiation model that's based on the original Frank-Tamm theory.\n"
+		"That means Cherenkov photons are emitted along the lateral surface of the cone relative to a charged\n"
+		"particle that passes through the material. The cone angle can be expressed as:\n"
+		"cos(ThetaChR) = 1 / (beta * RIndex).\n"
+		"To read more about the first Frank-Tamm theory, see:\n"
+		"I.M.Frank, I.E.Tamm, Coherent visible radiation of fast electrons passing through matter,\n"
+		"Dokl. Acad. Sci. USSR 14 (1937) 109-114\n\n"
+		"NOTE1: this model currently supports only optical photons and does not generate photons in the X-ray\n"
+		"region. On the other hand, the base class \"G4BaseChR_Model\" removes all the limitations that exist in\n"
+		"the G4Cerenkov class, meaning that the model can consider any kind of refractive index dependencies.\n\n"
+		"NOTE2: this model should generate good results as long as the considered radiator can be approximated\n"
+		"as \"ideal\", i.e., the Frank-Tamm theory is written for an infinitely thick emitter. If thin radiators\n"
+		"are considered, one should consider other models. For instance, check \"G4ThinTargetChR_Model\", which\n"
+		"allows one to consider thin plate-like radiators (one finite and two infinite dimensions).\n";
 }

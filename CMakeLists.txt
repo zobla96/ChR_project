@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.16...3.29 FATAL_ERROR)
 #NOTE: I think 3.16 should be able to run, but have no tested it!
 
 project(ChR_project
-	VERSION 0.5
+	VERSION 0.6
 	DESCRIPTION "Rework of Cherenkov process and ChR in thin targets"
 	LANGUAGES CXX)
 

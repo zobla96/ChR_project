@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -13,7 +13,7 @@ beginChR
 //=========public ChR::EventAction:: methods=========
 
 EventAction::EventAction() {
-	m_layerDataVec.reserve(DetectorConstruction::GetInstance()->GetNoOfRadLayers());
+	m_layerDataVec.reserve(g_detectorConstruction->GetNoOfRadLayers());
 	for (size_t i = 0; i < m_layerDataVec.capacity(); i++)
 		m_layerDataVec.emplace_back();
 }

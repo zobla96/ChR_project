@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -36,20 +36,6 @@ G4ExtraOpticalParameters_Messenger::G4ExtraOpticalParameters_Messenger(G4ExtraOp
 	G4UIparameter* uiParameter = nullptr;
 	
 	//ExtraOpticalParameters commands
-	p_materialThickness = new G4UIcommand{ "/process/optical/G4ChRProcess/extraOptParams/setLVThickness", this };
-	p_materialThickness->SetGuidance("Use this command to specify thickness of a specific logical volume.");
-	p_materialThickness->SetGuidance("This value is used for ChR models that can consider finite thickness targets.");
-	p_materialThickness->SetGuidance("To set this variable, you need to input a name of your logical volume and its thickness.");
-	uiParameter = new G4UIparameter{ "LV_name", 's', false };
-	p_materialThickness->SetParameter(uiParameter);
-	uiParameter = new G4UIparameter{ "thicknessValue", 'd', false };
-	p_materialThickness->SetParameter(uiParameter);
-	uiParameter = new G4UIparameter{ "thicknessUnit", 's', true };
-	uiParameter->SetDefaultUnit("um");
-	p_materialThickness->SetParameter(uiParameter);
-	p_materialThickness->SetToBeBroadcasted(false);
-	p_materialThickness->AvailableForStates(G4State_Idle);
-
 	p_newScanOfLV = new G4UIcommand{ "/process/optical/G4ChRProcess/extraOptParams/scanForNewLV", this };
 	p_newScanOfLV->SetGuidance("Used to rescan logical volumes. You might need to use this command");
 	p_newScanOfLV->SetGuidance("if you have changed the geometry in G4State_Idle and want to use G4CherenkovProcess");
@@ -89,7 +75,6 @@ G4ExtraOpticalParameters_Messenger::G4ExtraOpticalParameters_Messenger(G4ExtraOp
 
 G4ExtraOpticalParameters_Messenger::~G4ExtraOpticalParameters_Messenger() {
 	delete p_extraOpticalParametersDIR;
-	delete p_materialThickness;
 	delete p_newScanOfLV;
 	delete p_executeModel;
 	delete p_exoticRIndex;
@@ -111,20 +96,7 @@ void G4ExtraOpticalParameters_Messenger::SetNewValue(G4UIcommand* uiCmd, G4Strin
 		way to do the previous (like an inbuilt function of G4).
 		*/
 	};
-	if (uiCmd == p_materialThickness) {
-		findLV();
-		G4LogicalVolume* aLogicVolume = G4LogicalVolumeStore::GetInstance()->GetVolume(name1);
-		if (!aLogicVolume) {
-			std::ostringstream err;
-			err << "You wrote that the name of a logical volume is: " << std::quoted(name1)
-				<< "\nwhile there's no such a registered volume. Please, check the names again!\n";
-			G4Exception("G4ExtraOpticalParameters_Messenger::SetNewValue", "WE_EOPMessenger01", JustWarning, err);
-			return;
-		}
-		G4CherenkovMatData& lvMatData = p_extraOpticalParameters->FindOrCreateChRMatData(aLogicVolume);
-		lvMatData.m_matThickness = p_materialThickness->ConvertToDouble(name2.c_str()) * G4UnitDefinition::GetValueOf(name3);
-	}
-	else if (uiCmd == p_newScanOfLV) {
+	if (uiCmd == p_newScanOfLV) {
 		p_extraOpticalParameters->ScanAndAddUnregisteredLV();
 	}
 	else if (uiCmd == p_executeModel) {

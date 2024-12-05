@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -44,8 +44,8 @@ class DetectorConstruction_Messenger;
 
 class DetectorConstruction final : public G4VUserDetectorConstruction {
 public:
+	DetectorConstruction();
 	~DetectorConstruction() override;
-	static DetectorConstruction* GetInstance(); //it's simpler to get the pointer this way, but not necessary
 
 	DetectorConstruction(const DetectorConstruction&) = delete;
 	DetectorConstruction& operator=(const DetectorConstruction&) = delete;
@@ -75,7 +75,6 @@ public:
 	[[nodiscard]] inline bool GetCheckOverlap() const;
 	[[nodiscard]] inline unsigned char GetVerboseLevel() const;
 private:
-	DetectorConstruction();
 	//Dummy functions
 	void LoadMaterials();
 	void LoadWorld();
@@ -84,7 +83,7 @@ private:
 	//Additional pointers
 	G4VPhysicalVolume* p_worldPhys = nullptr;
 	std::unique_ptr<G4VisAttributes> m_visAttrHide;
-	DetectorConstruction_Messenger* p_detConstrMessenger = nullptr;
+	DetectorConstruction_Messenger* p_detConstructionMessenger = nullptr;
 	//private variables
 	G4String m_radiatorMaterialName;
 	double m_radiatorAngle;
@@ -299,7 +298,7 @@ auto HelperToBuildMatPropTable::FillMatPropertiesVectors(const char* fileName, G
 			}
 			catch (std::out_of_range) {
 				theError << "The data is out of range for double values.\n"
-					<< "Double values range from " << DBL_MIN << " to " << DBL_MAX << '\n'
+					<< "Double values range from " << -DBL_MAX << " to " << DBL_MAX << '\n'
 					<< "Successfully loaded data are:\n";
 				PrintLoadedData();
 				theError << "\nThe line:\n\"" << line << "\"\ncannot be converted\n";

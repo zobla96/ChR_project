@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -25,7 +25,6 @@ public:
 private:
 	G4ExtraOpticalParameters* p_extraOpticalParameters = nullptr;
 	G4UIdirectory* p_extraOpticalParametersDIR = nullptr;
-	G4UIcommand* p_materialThickness = nullptr;
 	G4UIcommand* p_newScanOfLV = nullptr;
 	G4UIcommand* p_executeModel = nullptr;
 	G4UIcommand* p_exoticRIndex = nullptr;

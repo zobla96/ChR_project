@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -12,19 +12,9 @@ beginChR
 
 //=========public ChR::TrackingAction:: methods=========
 
-TrackingAction::TrackingAction()
-: r_noOfPrimaries(PrimaryGeneratorAction::GetInstance()->GetRefNoOfParticles()) {
-
-}
-
 void TrackingAction::PreUserTrackingAction(const G4Track* aTrack) {
-	if (aTrack->GetTrackID() <= (int)r_noOfPrimaries)
-		m_layerData[aTrack->GetTrackID()];
-}
-
-void TrackingAction::PostUserTrackingAction(const G4Track* aTrack) {
-	if (aTrack->GetTrackID() <= (int)r_noOfPrimaries)
-		m_layerData.erase(aTrack->GetTrackID());
+	if (aTrack->GetTrackID() <= g_primaryGenerator->GetNoOfParticles())
+		m_specificTrackDataMap[aTrack->GetTrackID()] = SpecificTrackData{};
 }
 
 endChR

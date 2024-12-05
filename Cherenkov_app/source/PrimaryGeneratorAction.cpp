@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -11,11 +11,6 @@
 beginChR
 
 //=========public ChR::PrimaryGeneratorAction:: methods=========
-
-PrimaryGeneratorAction* PrimaryGeneratorAction::GetInstance() {
-	static thread_local PrimaryGeneratorAction* theInst = new PrimaryGeneratorAction{};
-	return theInst;
-}
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 : m_beamSigma(0._um), m_sinBeamDivergenceTheta(0.), m_energy(855._MeV),

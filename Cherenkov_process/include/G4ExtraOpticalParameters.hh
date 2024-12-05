@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -28,6 +28,8 @@ UI commands instead!
 #include "globals.hh"
 #include "G4LogicalVolume.hh"
 #include "G4OpticalParameters.hh"
+#include "G4StandardChR_Model.hh"
+#include "G4ThinTargetChR_Model.hh"
 //std:: headers
 #include <memory>
 #include <unordered_map>
@@ -48,22 +50,8 @@ UI commands instead!
 //};
 //=======End of hashing of G4LogicalVolume*=======
 
-// Don't change values of G4CherenkovMatData objects manually (especially flags)! Use UI commands!
-struct G4CherenkovMatData {
-	//for now keeping it simple, but this struct might be changed in the future
-	explicit G4CherenkovMatData(const size_t execModel = 0, const G4double matThickness = -1)
-		: m_matThickness(matThickness), m_executeModel(execModel), m_exoticRIndex(false), m_exoticFlagInital(false) {}
-	~G4CherenkovMatData() = default;
-	//m_matThickness should be manually set!!!
-	G4double m_matThickness; //for now keeping it only in a single dimension so one should be careful.
-	size_t m_executeModel;
-	G4bool m_exoticRIndex;
-	//the following is set through ScanAndAddUnregisteredLV and one shouldn't touch it
-	G4bool m_exoticFlagInital;
-	// 6 wasted bytes on x64
-};
-
 class G4ExtraOpticalParameters_Messenger;
+struct G4CherenkovMatData;
 
 class G4ExtraOpticalParameters final {
 	using dataType = G4CherenkovMatData;
@@ -85,6 +73,40 @@ private:
 	G4ExtraOpticalParameters();
 	G4ExtraOpticalParameters_Messenger* p_extraOpticalParameters_Messenger = nullptr;
 	std::unordered_map<const G4LogicalVolume*, dataType/*, G4LogicalHasher, G4LogicalCompare*/> m_ChRMatData;
+};
+
+// To change m_exoticRIndex use the UI command; m_executeModel can be changed manually as well
+struct G4CherenkovMatData {
+	friend G4ExtraOpticalParameters;
+	friend G4ThinTargetChR_Model;
+	friend G4ExtraOpticalParameters_Messenger;
+public:
+	explicit G4CherenkovMatData(const size_t execModel = 0)
+		: m_executeModel(execModel), m_halfThickness(-1000.), m_exoticRIndex(false),
+		m_exoticFlagInital(false), m_minAxis(255) {}
+	~G4CherenkovMatData() { delete p_middlePoint; }
+
+	// G4CherenkovProcess model ID that will be executed
+	size_t m_executeModel;
+
+public:
+	// return copies
+	[[nodiscard]] inline G4ThreeVector GetMiddlePointVec() const;
+	[[nodiscard]] inline G4double GetHalfThickness() const;
+	[[nodiscard]] inline G4bool GetExoticRIndex() const;
+	[[nodiscard]] inline G4bool GetExoticInitialFlag() const;
+	[[nodiscard]] inline unsigned char GetMinAxis() const;
+private:
+	//only friends may access
+	G4ThreeVector* p_middlePoint = nullptr;
+	// The previous is needed when transforming into the coordinate system of a layered radiator
+	// Also, using a pointer as I believe it could save some memory (but again that depends on the use case)
+	G4double m_halfThickness;
+	G4bool m_exoticRIndex;
+	G4bool m_exoticFlagInital;
+	unsigned char m_minAxis; // 0 - x min; 1 - y min; 2 - z min; >2 fail
+	// most of the private members are needed only for G4ThinTargetChR_Model
+	// 5 wasted bytes on x64
 };
 
 //=======Inlines around m_ChRMatData=======
@@ -124,6 +146,26 @@ const G4CherenkovMatData* G4ExtraOpticalParameters::FindChRMatData(const G4Logic
 
 const std::unordered_map<const G4LogicalVolume*, G4CherenkovMatData>& G4ExtraOpticalParameters::GetChRMatData() const {
 	return m_ChRMatData;
+}
+
+//=======Get inlines for G4CherenkovMatData=======
+G4ThreeVector G4CherenkovMatData::GetMiddlePointVec() const {
+	if (p_middlePoint)
+		return G4ThreeVector{ *p_middlePoint };
+	else
+		return G4ThreeVector{ DBL_MAX, DBL_MAX, DBL_MAX };
+}
+G4double G4CherenkovMatData::GetHalfThickness() const {
+	return m_halfThickness;
+}
+G4bool G4CherenkovMatData::GetExoticRIndex() const {
+	return m_exoticRIndex;
+}
+G4bool G4CherenkovMatData::GetExoticInitialFlag() const {
+	return m_exoticFlagInital;
+}
+unsigned char G4CherenkovMatData::GetMinAxis() const {
+	return m_minAxis;
 }
 
 #endif // !G4ExtraOpticalParameters_hh

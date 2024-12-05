@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -20,19 +20,24 @@ beginChR
 //=========public ChR::ActionInitialization:: methods=========
 
 void ActionInitialization::BuildForMaster() const {
-	SetUserAction(new RunAction{ new EventAction{} });
+	g_runAction = new RunAction{};
+	SetUserAction(g_runAction);
 }
 
 void ActionInitialization::Build() const {
-	EventAction* evAction = new EventAction{};
-	SetUserAction(evAction);
-	SetUserAction(new RunAction{ evAction });
-	SetUserAction(new StackingAction);
-	SetUserAction(PrimaryGeneratorAction::GetInstance());
+	g_runAction = new RunAction{};
+	SetUserAction(g_runAction);
+	g_eventAction = new EventAction{};
+	SetUserAction(g_eventAction);
+	g_primaryGenerator = new PrimaryGeneratorAction{};
+	SetUserAction(g_primaryGenerator);
+	g_stackingAction = new StackingAction{};
+	SetUserAction(g_stackingAction);
 #ifdef standardRun
-	TrackingAction* trAction = new TrackingAction{};
-	SetUserAction(trAction);
-	SetUserAction(new SteppingAction{ evAction, trAction });
+	g_trackingAction = new TrackingAction{};
+	SetUserAction(g_trackingAction);
+	g_steppingAction = new SteppingAction{};
+	SetUserAction(g_steppingAction);
 #endif // standardRun
 
 }

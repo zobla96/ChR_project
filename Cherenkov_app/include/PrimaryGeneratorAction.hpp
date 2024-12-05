@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -26,9 +26,8 @@ beginChR
 class PrimaryGeneratorAction_Messenger;
 
 class PrimaryGeneratorAction final : public G4VUserPrimaryGeneratorAction {
-	PrimaryGeneratorAction();
 public:
-	static PrimaryGeneratorAction* GetInstance();
+	PrimaryGeneratorAction();
 	~PrimaryGeneratorAction() override;
 	void GeneratePrimaries(G4Event*) override;
 	//=======Set inlines=======
@@ -47,7 +46,6 @@ public:
 	[[nodiscard]] inline unsigned short GetMassNo() const;
 	[[nodiscard]] inline unsigned short GetAtomicNo() const;
 	[[nodiscard]] inline int GetNoOfParticles() const;
-	[[nodiscard]] inline const unsigned int& GetRefNoOfParticles() const;
 	[[nodiscard]] inline G4ParticleGun* GetParticleGun() const;
 private:
 	double m_beamSigma;
@@ -60,7 +58,7 @@ private:
 
 	double m_energy; //full e- energy or for Z,A!=0 energy per nucleon
 	double m_zDistance;
-	unsigned int m_noOfParticles;
+	int m_noOfParticles;
 	// removed bit-fields -> 2 bytes would be wasted and bit-fields are slightly slower
 	unsigned short m_massNo/* : 9*/; //bit-field limit 511 [0,512)
 	unsigned short m_atomicNo/* : 7*//*, : 0*/; //bit-field limit 127 [0,128)
@@ -112,9 +110,6 @@ G4ParticleGun* PrimaryGeneratorAction::GetParticleGun() const {
 	return p_theGun;
 }
 int PrimaryGeneratorAction::GetNoOfParticles() const {
-	return m_noOfParticles;
-}
-const unsigned int& PrimaryGeneratorAction::GetRefNoOfParticles() const {
 	return m_noOfParticles;
 }
 

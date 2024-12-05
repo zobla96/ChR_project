@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -59,10 +59,10 @@ public:
 	// printLevel >= 2 -> print all available information about registered physics tables
 	
 	//=======Set inlines=======
-	inline static unsigned char SetNoOfBetaSteps(const unsigned char);
+	inline static unsigned int SetNoOfBetaSteps(const unsigned int);
 	inline void SetUseEnergyLoss(const G4bool);
 	//=======Get inlines=======
-	[[nodiscard]] inline static unsigned char GetNoOfBetaSteps();
+	[[nodiscard]] inline static unsigned int GetNoOfBetaSteps();
 	[[nodiscard]] inline G4bool GetUseEnergyLoss() const;
 protected:
 	[[nodiscard]] virtual G4double CalculateAverageNumberOfPhotons(const G4double aCharge, const G4double betaValue, const size_t materialID);
@@ -82,8 +82,8 @@ private:
 
 //=======Set inlines=======
 
-unsigned char G4StandardCherenkovProcess::SetNoOfBetaSteps(const unsigned char value) {
-	unsigned char temp = m_noOfBetaSteps;
+unsigned int G4StandardCherenkovProcess::SetNoOfBetaSteps(const unsigned int value) {
+	unsigned int temp = m_noOfBetaSteps;
 	m_noOfBetaSteps = value;
 	return temp;
 }
@@ -94,7 +94,7 @@ void G4StandardCherenkovProcess::SetUseEnergyLoss(const G4bool value) {
 
 //=======Get inlines=======
 
-unsigned char G4StandardCherenkovProcess::GetNoOfBetaSteps() {
+unsigned int G4StandardCherenkovProcess::GetNoOfBetaSteps() {
 	return m_noOfBetaSteps;
 }
 

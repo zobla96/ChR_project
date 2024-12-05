@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -10,13 +10,12 @@
 
 beginChR
 
+static std::mutex o_addingTime;
+
 //=========public ChR::SteppingAction:: methods=========
 
-SteppingAction::SteppingAction(EventAction* evAction, TrackingAction* trAction, const unsigned char val)
-: p_trackingAction(trAction), p_eventAction(evAction),
-r_noOfRadLayers(DetectorConstruction::GetInstance()->GetRefNoOfRadLayers()),
-r_noOfPrimaries(PrimaryGeneratorAction::GetInstance()->GetRefNoOfParticles()),
-m_verboseLevel(val) {
+SteppingAction::SteppingAction(const unsigned char val)
+: m_verboseLevel(val) {
 	p_steppingMessenger = new SteppingAction_Messenger{ this };
 	G4VPhysicalVolume* detPhys = nullptr;
 	for (auto* i : *(G4PhysicalVolumeStore::GetInstance())) {
@@ -42,11 +41,17 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep) {
 	G4Track* aTrack = aStep->GetTrack();
 	//NOTE: the following isn't important for obtaining Cherenkov spectral lines, but can be
 	//helpful if one want to obtain a function of energy loss per penetration depth
-	if (r_noOfRadLayers > 1 && aTrack->GetTrackID() <= (int)r_noOfPrimaries) {
+	if (aTrack->GetTrackID() <= g_primaryGenerator->GetNoOfParticles()) {
+#ifdef boostEfficiency
+		g_trackingAction->SetBeta(aTrack, (aStep->GetPreStepPoint()->GetBeta() + aStep->GetPostStepPoint()->GetBeta()) * 0.5);
+		g_trackingAction->SetGlobalDirection(aTrack, aStep->GetDeltaPosition());
+#endif // boostEfficiency
+		if (g_detectorConstruction->GetNoOfRadLayers() <= 1)
+			return;
 		G4VPhysicalVolume* prePV = aStep->GetPreStepPoint()->GetPhysicalVolume();
 		if (prePV->GetName() == "radiatorLayerPhys") {
-			p_trackingAction->AddToLayerDeltaEnergy(aTrack, aStep->GetPreStepPoint()->GetKineticEnergy() - aStep->GetPostStepPoint()->GetKineticEnergy());
-			p_trackingAction->AddToLayerStep(aTrack, aStep->GetStepLength());
+			g_trackingAction->AddToDeltaEnergy(aTrack, aStep->GetPreStepPoint()->GetKineticEnergy() - aStep->GetPostStepPoint()->GetKineticEnergy());
+			g_trackingAction->AddToStepLength(aTrack, aStep->GetStepLength());
 		}
 		else return;
 		if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary) {
@@ -58,16 +63,21 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep) {
 					return;
 				}
 				//no need for safeties for our energies
-				p_eventAction->AddToLayerDataVec((size_t/*CopyNo should be unsigned??*/)prePV->GetCopyNo(), p_trackingAction->GetLayerDeltaEnergy(aTrack), p_trackingAction->GetLayerStep(aTrack));
-				p_trackingAction->SetLayerDeltaEnergy(aTrack, 0.);
-				p_trackingAction->SetLayerStep(aTrack, 0.);
+				g_eventAction->AddToLayerDataVec((size_t/*CopyNo should be unsigned??*/)prePV->GetCopyNo(), g_trackingAction->GetDeltaEnergy(aTrack), g_trackingAction->GetStepLength(aTrack));
+				g_trackingAction->SetDeltaEnergy(aTrack, 0.);
+				g_trackingAction->SetStepLength(aTrack, 0.);
 			}
 			else /*(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "worldPhys")*/
-				p_eventAction->AddToLayerDataVec((size_t)prePV->GetCopyNo(), p_trackingAction->GetLayerDeltaEnergy(aTrack), p_trackingAction->GetLayerStep(aTrack));
+				g_eventAction->AddToLayerDataVec((size_t)prePV->GetCopyNo(), g_trackingAction->GetDeltaEnergy(aTrack), g_trackingAction->GetStepLength(aTrack));
 		}
 		return;
 	}
 	if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") {
+		/*std::cout << "FROM STEP\nx: " << aStep->GetPreStepPoint()->GetMomentumDirection().getX()
+			<< ", y: " << aStep->GetPreStepPoint()->GetMomentumDirection().getY()
+			<< ", z: " << aStep->GetPreStepPoint()->GetMomentumDirection().getZ() << '\n';
+		std::cout << "phi: " << aStep->GetPreStepPoint()->GetMomentumDirection().getPhi() * 180 / CLHEP::pi << '\n'
+			<< "theta: " << aStep->GetPreStepPoint()->GetMomentumDirection().getTheta() * 180 / CLHEP::pi << '\n';*/
 		if (aTrack->GetMomentumDirection().y() <= 0)
 			aTrack->SetTrackStatus(fStopAndKill);
 	}
@@ -79,9 +89,10 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep) {
 			G4ThreeVector localCoords = m_rotToDetSystem * coords - m_trToDetSurfSystem;
 			if (localCoords.getZ() > 1.e-10) { //CARE HERE! IEEE754 standard; don't care about negative values here
 				if (m_verboseLevel > 1) {
-					static std::atomic<int> noOfSideDet = 0;
+					static std::atomic<int> noOfSideDet = 1;
 					std::ostringstream err;
-					err << "Side detection #" << ++noOfSideDet << "\tz value: " << std::setprecision(11) << localCoords.getZ() << '\n';
+					int new_value = noOfSideDet.fetch_add(1, std::memory_order_relaxed);
+					err << "Side detection #" << new_value << "\tz value: " << std::setprecision(11) << localCoords.getZ() << '\n';
 					G4Exception("SteppingAction::UserSteppingAction(...)", "WE_StepAction02", JustWarning, err);
 				}
 			}
@@ -94,9 +105,31 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep) {
 				analysisManager->FillNtupleDColumn(4, localCoords.getY() / um);
 				analysisManager->AddNtupleRow();
 				if (m_verboseLevel > 0) {
-					static std::atomic<int> counter = 0;
-					std::cout << "Event #" << ++counter << '\n' << "Wl: " << 1.239841984e-6 * m * eV / (aStep->GetPostStepPoint()->GetTotalEnergy() * nm) << '\n';
+					static std::atomic<int> counter = 1;
+					int new_value = counter.fetch_add(1, std::memory_order_relaxed);
+					if(new_value % 100 == 0)
+						std::cout << "Detection #" << new_value << '\n';
 				}
+#ifdef followMinMaxValues
+				SpecificTrackData* theData = g_trackingAction->GetSpecificTrackData(aTrack);
+				if (!theData)
+					return;
+				{
+					std::lock_guard theLock{ o_addingTime };
+					if (theData->m_phiValue != DBL_MAX) {
+						if (g_maxPhiValue < theData->m_phiValue)
+							g_maxPhiValue = theData->m_phiValue;
+						if (g_minPhiValue > theData->m_phiValue)
+							g_minPhiValue = theData->m_phiValue;
+					}
+					if (theData->m_thetaValue != DBL_MAX) {
+						if (g_maxThetaValue < theData->m_thetaValue)
+							g_maxThetaValue = theData->m_thetaValue;
+						if (g_minThetaValue > theData->m_thetaValue)
+							g_minThetaValue = theData->m_thetaValue;
+					}
+				}
+#endif // followMinMaxValues
 			}
 		}
 	}

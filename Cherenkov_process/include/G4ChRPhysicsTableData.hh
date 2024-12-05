@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -41,10 +41,14 @@ struct G4ChRPhysTableData {
 		delete p_bigBetaCDFVector;
 	}
 
+	G4ChRPhysTableData& operator=(const G4ChRPhysTableData& other) = delete;
+	G4ChRPhysTableData(const G4ChRPhysTableData& other) = delete;
+
 	G4ChRPhysTableData& operator=(G4ChRPhysTableData&& other) noexcept {
 		if (this == &other)
 			return *this;
 		m_aroundBetaValues = std::exchange(other.m_aroundBetaValues, std::vector<G4AroundBetaBasedValues>{});
+		delete p_bigBetaCDFVector;
 		p_bigBetaCDFVector = std::exchange(other.p_bigBetaCDFVector, nullptr);
 		return *this;
 	}

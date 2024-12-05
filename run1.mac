@@ -183,15 +183,6 @@
 ### Default printLevel: 0
 #/process/optical/G4ChRProcess/Models/printBaseChRPhysicsVector [<printLevel>] [<materialName>]
 
-### Used to change the mutliplier 'K' for G4ThinTargetChR_Model. The K is used
-### for changing the widening of the cone for finite thickness targets
-#/process/optical/G4ChRProcess/Models/ThinChRModelMultiplier <valueK>
-
-
-### Used to change the logical thickness for ChR models that can consider finite
-### thickness radiators. It is applied and registered for specific logical volumes
-### Default unit: um (micrometer)
-#/process/optical/G4ChRProcess/extraOptParams/setLVThickness <logicVolumeName> <thicknessValue> [<thicknessUnit>]
 
 ### Used to rescan added logical volumes. This might be useful if one has changed
 ### the geometry in G4State_Idle... otherwise, the current ChR might fail

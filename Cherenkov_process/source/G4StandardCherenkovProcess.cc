@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -331,49 +331,47 @@ void G4StandardCherenkovProcess::BuildPhysicsTable(const G4ParticleDefinition&) 
 void G4StandardCherenkovProcess::DumpInfo() const {
 	std::cout.fill('=');
 	std::cout << std::setw(116) << '\n';
-	std::cout
-		<< "Begin of G4StandardCherenkovProcess::DumpInfo()\n"
-		<< "\"G4StandardCherenkovProcess\" is a Cherenkov radiation process that's based on the original Frank-Tamm theory.\n"
-		<< "That means Cherenkov photons are emitted along the lateral surface of the cone relative to a charged\n"
-		<< "particle that passes through the material. The cone angle can be expressed as:\n"
-		<< "cos(ThetaChR) = 1 / (beta * RIndex).\n"
-		<< "To read more about the first Frank-Tamm theory, see:\n"
-		<< "I.M.Frank, I.E.Tamm, Coherent visible radiation of fast electrons passing through matter,\n"
-		<< "Dokl. Acad. Sci. USSR 14 (1937) 109-114\n\n"
-		<< "NOTE1: this model currently supports only optical photons and does not generate photons in the X-ray\n"
-		<< "region. On the other hand, the process removes all the limitations that exist in the G4Cerenkov\n"
-		<< "class, meaning that the model can consider any kind of refractive index dependencies.\n\n"
-		<< "NOTE2: this process should generate good results as long as the considered radiator can be approximated\n"
-		<< "as \"ideal\", i.e., the Frank-Tamm theory is written for an infinitely thick emitter. If thin radiators\n"
-		<< "are considered, one should consider other models. For more information, see the G4CherenkovProcess class\n\n"
-		<< "If you want to read about what Cherenkov process is, use \"G4StandardCherenkovProcess::ProcessDescription()\" method\n"
-		<< "End of G4StandardCherenkovProcess::DumpInfo()\n";
-	std::cout << std::setw(116) << '\n' << std::endl;
+	std::cout << "Begin of G4StandardCherenkovProcess::DumpInfo()\n"
+		"\"G4StandardCherenkovProcess\" is a Cherenkov radiation process that's based on the original Frank-Tamm theory.\n"
+		"That means Cherenkov photons are emitted along the lateral surface of the cone relative to a charged\n"
+		"particle that passes through the material. The cone angle can be expressed as:\n"
+		"cos(ThetaChR) = 1 / (beta * RIndex).\n"
+		"To read more about the first Frank-Tamm theory, see:\n"
+		"I.M.Frank, I.E.Tamm, Coherent visible radiation of fast electrons passing through matter,\n"
+		"Dokl. Acad. Sci. USSR 14 (1937) 109-114\n\n"
+		"NOTE1: this model currently supports only optical photons and does not generate photons in the X-ray\n"
+		"region. On the other hand, the process removes all the limitations that exist in the G4Cerenkov\n"
+		"class, meaning that the model can consider any kind of refractive index dependencies.\n\n"
+		"NOTE2: this process should generate good results as long as the considered radiator can be approximated\n"
+		"as \"ideal\", i.e., the Frank-Tamm theory is written for an infinitely thick emitter. If thin radiators\n"
+		"are considered, one should consider other models. For more information, see the G4CherenkovProcess class\n\n"
+		"If you want to read about what Cherenkov process is, use \"G4StandardCherenkovProcess::ProcessDescription()\" method\n"
+		"End of G4StandardCherenkovProcess::DumpInfo()\n"
+		<< std::setw(116) << '\n' << std::endl;
 }
 
 void G4StandardCherenkovProcess::ProcessDescription(std::ostream& outStream) const {
 	outStream.fill('=');
 	outStream << std::setw(116) << '\n';
 	outStream << "Begin of G4StandardCherenkovProcess::ProcessDescription():\n\n"
-		<< "The Cherenkov radiation was discovered in 1934 by S.I. Vavilov and P.A. Cherenkov (Vavilov's student).\n"
-		<< "The first theoretical explanation was provided in 1937 by I.M. Frank and I.E. Tamm. According to our\n"
-		<< "understanding, when a charged particle moves through a medium faster than the phase velocity of light,\n"
-		<< "photons of a wide energy range (predominantly in the optical region) are emitted. \"Moves faster\" means\n"
-		<< "the condition \"beta * n >= 1\", where \"beta\" is a relativistic reduced velocity (= v / c) and \"n\" is\n"
-		<< "the refractive index, is satisfied.\n\n"
-		<< "In order to use this class in Geant4, one must define the refractive index of a material through the class\n"
-		<< "G4MaterialPropertiesTable. To do so, one needs to provide a corresponding key index that can be found in\n"
-		<< "\"G4MaterialPropertiesIndex.hh\" (just remove \"k\" from the enum). Also, note that it's advisable to\n"
-		<< "define absorption always; otherwise an optical photon might enter an infinite loop of total internal\n"
-		<< "reflections.\n\n"
-		<< "To see more details about this specific C++ class, use the G4StandardCherenkovProcess::DumpInfo() method.\n\n"
-		<< "Some English literature I know of that one might find interesting and is a nice summary of everything:\n"
-		<< "1. J.V. Jelley, Cherenkov radiation and its Applications, Pergamon Press, New York, 1958\n"
-		<< "2. B.M. Bolotovskii \"Vavilov-Cherenkov radiation: its discovery and application\" Phys. Usp. 52(11), (2009) 1099-1110\n"
-		<< "3. A.P. Kobzev \"On the radiation mechanism of a uniformly moving charge\", Phys. Part. Nucl. 45(3), (2014) 628-653\n\n"
-		<< "End of G4StandardCherenkovProcess::ProcessDescription()\n";
-	outStream << std::setw(116) << '\n';
-	outStream << std::endl;
+		"The Cherenkov radiation was discovered in 1934 by S.I. Vavilov and P.A. Cherenkov (Vavilov's student).\n"
+		"The first theoretical explanation was provided in 1937 by I.M. Frank and I.E. Tamm. According to our\n"
+		"understanding, when a charged particle moves through a medium faster than the phase velocity of light,\n"
+		"photons of a wide energy range (predominantly in the optical region) are emitted. \"Moves faster\" means\n"
+		"the condition \"beta * n >= 1\", where \"beta\" is a relativistic reduced velocity (= v / c) and \"n\" is\n"
+		"the refractive index, is satisfied.\n\n"
+		"In order to use this class in Geant4, one must define the refractive index of a material through the class\n"
+		"G4MaterialPropertiesTable. To do so, one needs to provide a corresponding key index that can be found in\n"
+		"\"G4MaterialPropertiesIndex.hh\" (just remove \"k\" from the enum). Also, note that it's advisable to\n"
+		"define absorption always; otherwise an optical photon might enter an infinite loop of total internal\n"
+		"reflections.\n\n"
+		"To see more details about this specific C++ class, use the G4StandardCherenkovProcess::DumpInfo() method.\n\n"
+		"Some English literature I know of that one might find interesting and is a nice summary of everything:\n"
+		"1. J.V. Jelley, Cherenkov radiation and its Applications, Pergamon Press, New York, 1958\n"
+		"2. B.M. Bolotovskii \"Vavilov-Cherenkov radiation: its discovery and application\" Phys. Usp. 52(11), (2009) 1099-1110\n"
+		"3. A.P. Kobzev \"On the radiation mechanism of a uniformly moving charge\", Phys. Part. Nucl. 45(3), (2014) 628-653\n\n"
+		"End of G4StandardCherenkovProcess::ProcessDescription()\n"
+		<< std::setw(116) << '\n' << std::endl;
 }
 
 void G4StandardCherenkovProcess::PrintChRPhysDataVec(const unsigned char printLevel, const G4Material* aMaterial) {
@@ -416,14 +414,14 @@ ExitPrintFunction:
 //=========protected G4CherenkovProcess:: methods=========
 
 G4double G4StandardCherenkovProcess::CalculateAverageNumberOfPhotons(const G4double aCharge, const G4double betaValue, const size_t materialID) {
-	constexpr double Rfact = 369.81 / (eV * cm);
+	constexpr G4double Rfact = 369.81 / (eV * cm);
 	if (betaValue <= 0)
 		return 0.;
 	const std::vector<G4ChRPhysTableData::G4AroundBetaBasedValues>& physDataVec = m_ChRPhysDataVec[materialID].m_aroundBetaValues;
 	// the following condition should never happen - it was already done in the StepLength method
 	/*if (physDataVec.size() <= 1)
 		return 0.;*/
-	double deltaE, ChRRightIntPart;
+	G4double deltaE, ChRRightIntPart;
 	if (betaValue <= physDataVec.front().m_betaValue) {
 		deltaE = 0.;
 		ChRRightIntPart = 0.;

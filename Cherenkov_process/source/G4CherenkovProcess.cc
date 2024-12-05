@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -55,10 +55,10 @@ void G4CherenkovProcess::DumpInfo() const {
 	std::cout.fill('=');
 	std::cout << std::setw(116) << '\n';
 	std::cout << "Begin of G4CherenkovProcess::DumpInfo():\n\n"
-		<< "A class G4CherenkovProcess is made as a wrapper for various Cherenkov radiation models. All\n"
-		<< "Cherenkov models are stored in a std::vector<G4BaseChR_Model*>. Depending on user-loaded data,\n"
-		<< "the class selects what Cherenkov models will be executed during the runtime.\n"
-		<< "Currently loaded Cherenkov models are:\n";
+		"A class G4CherenkovProcess is made as a wrapper for various Cherenkov radiation models. All\n"
+		"Cherenkov models are stored in a std::vector<G4BaseChR_Model*>. Depending on user-loaded data,\n"
+		"the class selects what Cherenkov models will be executed during the runtime.\n"
+		"Currently loaded Cherenkov models are:\n";
 	size_t temp = 0;
 	for (auto* aModel : m_registeredModels) {
 		std::cout.fill('+');
@@ -81,23 +81,22 @@ void G4CherenkovProcess::ProcessDescription(std::ostream& outStream) const {
 	outStream.fill('=');
 	outStream << std::setw(116) << '\n';
 	outStream << "Begin of G4CherenkovProcess::ProcessDescription():\n\n"
-		<< "The Cherenkov radiation was discovered in 1934 by S.I. Vavilov and P.A. Cherenkov (Vavilov's student).\n"
-		<< "The first theoretical explanation was provided in 1937 by I.M. Frank and I.E. Tamm. According to our\n"
-		<< "understanding, when a charged particle moves through a medium faster than the phase velocity of light,\n"
-		<< "photons of a wide energy range (predominantly in the optical region) are emitted. \"Moves faster\" means\n"
-		<< "the condition \"beta * n >= 1\", where \"beta\" is a relativistic reduced velocity (= v / c) and \"n\" is\n"
-		<< "the refractive index, is satisfied.\n\n"
-		<< "In order to use this class in Geant4, one must define the refractive index of a material through the class\n"
-		<< "G4MaterialPropertiesTable. To do so, one needs to provide a corresponding key index that can be found in\n"
-		<< "\"G4MaterialPropertiesIndex.hh\" (just remove \"k\" from the enum). Also, note that it's advisable to\n"
-		<< "define absorption always; otherwise an optical photon might enter an infinite loop of total internal\n"
-		<< "reflections.\n\n"
-		<< "To see more details about this specific C++ class, use the G4CherenkovProcess::DumpInfo() method.\n\n"
-		<< "Some English literature I know of that one might find interesting and is a nice summary of everything:\n"
-		<< "1. J.V. Jelley, Cherenkov radiation and its Applications, Pergamon Press, New York, 1958\n"
-		<< "2. B.M. Bolotovskii \"Vavilov-Cherenkov radiation: its discovery and application\" Phys. Usp. 52(11), (2009) 1099-1110\n"
-		<< "3. A.P. Kobzev \"On the radiation mechanism of a uniformly moving charge\", Phys. Part. Nucl. 45(3), (2014) 628-653\n\n"
-		<< "End of G4CherenkovProcess::ProcessDescription()\n";
-	outStream << std::setw(116) << '\n';
-	outStream << std::endl;
+		"The Cherenkov radiation was discovered in 1934 by S.I. Vavilov and P.A. Cherenkov (Vavilov's student).\n"
+		"The first theoretical explanation was provided in 1937 by I.M. Frank and I.E. Tamm. According to our\n"
+		"understanding, when a charged particle moves through a medium faster than the phase velocity of light,\n"
+		"photons of a wide energy range (predominantly in the optical region) are emitted. \"Moves faster\" means\n"
+		"the condition \"beta * n >= 1\", where \"beta\" is a relativistic reduced velocity (= v / c) and \"n\" is\n"
+		"the refractive index, is satisfied.\n\n"
+		"In order to use this class in Geant4, one must define the refractive index of a material through the class\n"
+		"G4MaterialPropertiesTable. To do so, one needs to provide a corresponding key index that can be found in\n"
+		"\"G4MaterialPropertiesIndex.hh\" (just remove \"k\" from the enum). Also, note that it's advisable to\n"
+		"define absorption always; otherwise an optical photon might enter an infinite loop of total internal\n"
+		"reflections.\n\n"
+		"To see more details about this specific C++ class, use the G4CherenkovProcess::DumpInfo() method.\n\n"
+		"Some English literature I know of that one might find interesting and is a nice summary of everything:\n"
+		"1. J.V. Jelley, Cherenkov radiation and its Applications, Pergamon Press, New York, 1958\n"
+		"2. B.M. Bolotovskii \"Vavilov-Cherenkov radiation: its discovery and application\" Phys. Usp. 52(11), (2009) 1099-1110\n"
+		"3. A.P. Kobzev \"On the radiation mechanism of a uniformly moving charge\", Phys. Part. Nucl. 45(3), (2014) 628-653\n\n"
+		"End of G4CherenkovProcess::ProcessDescription()\n"
+	<< std::setw(116) << '\n' << std::endl;
 }

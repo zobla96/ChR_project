@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -42,14 +42,28 @@ void G4ExtraOpticalParameters::ScanAndAddUnregisteredLV() {
 					const auto& dataVec = reinterpret_cast<const G4AccessPhysicsVector*>(physVec)->GetDataVector();
 					// now, keeping the condition simple... might change in the future
 					if (!std::is_sorted(dataVec.begin(), dataVec.end())) { //normally it should be sorted in ascending order
-						matData.m_exoticRIndex = true;
+						G4bool temp = matData.m_exoticFlagInital;
 						matData.m_exoticFlagInital = true;
+						if (temp != matData.m_exoticFlagInital)
+							matData.m_exoticRIndex = true;
+					}
+					else {
+						G4bool temp = matData.m_exoticFlagInital;
+						matData.m_exoticFlagInital = false;
+						if (temp != matData.m_exoticFlagInital)
+							matData.m_exoticRIndex = false;
 					}
 				}
 			}
 		}
 	}
 }
+
+#define PrintTrueOrFalse(memberName)	\
+		if (memberName)					\
+			std::cout << "true\n";		\
+		else							\
+			std::cout << "false\n"
 
 void G4ExtraOpticalParameters::PrintChRMatData(const G4LogicalVolume* aLogicalVolume) const {
 	auto PrintLVData =
@@ -60,17 +74,29 @@ void G4ExtraOpticalParameters::PrintChRMatData(const G4LogicalVolume* aLogicalVo
 			<< std::setw(39) << ' ' << std::setfill('^') << std::setw(key->GetName().length() + 1) << '\n' << std::setfill(' ')
 			<< std::left << std::setw(31) << "Selected process: " << aMatData.m_executeModel
 			<< " (" << chProc->GetChRModel(aMatData.m_executeModel)->GetChRModelName() << ")\n"
-			<< std::setw(31) << "Thickness:" << aMatData.m_matThickness / um << " um\n"
 			<< std::setw(31) << "Current exotic RIndex flag:";
-		if (aMatData.m_exoticRIndex)
-			std::cout << "true\n";
-		else
-			std::cout << "false\n";
+		PrintTrueOrFalse(aMatData.m_exoticRIndex);
 		std::cout << std::setw(31) << "Initial exotic RIndex flag:";
-		if (aMatData.m_exoticFlagInital)
-			std::cout << "true\n";
+		PrintTrueOrFalse(aMatData.m_exoticFlagInital);
+		std::cout << std::setw(31) << "Minimum found for axis:";
+		if (aMatData.m_minAxis == 0)
+			std::cout << "x\n";
+		else if (aMatData.m_minAxis == 1)
+			std::cout << "y\n";
+		else if (aMatData.m_minAxis == 2)
+			std::cout << "z\n";
 		else
-			std::cout << "false\n";
+			std::cout << "Not defined\n";
+		std::cout << std::setw(31) << "Half-thickness: ";
+		if (aMatData.m_halfThickness < 0.)
+			std::cout << "Not defined\n";
+		else
+			std::cout << aMatData.m_halfThickness / um << " um\n";
+		std::cout << std::setw(31) << "Layered volume global center:";
+		if (aMatData.p_middlePoint)
+			std::cout << (*aMatData.p_middlePoint)[0] << ", " << (*aMatData.p_middlePoint)[1] << ", " << (*aMatData.p_middlePoint)[2] << "\n";
+		else
+			std::cout << "Not defined\n";
 	};
 	std::cout.fill('=');
 	std::cout << std::defaultfloat << std::setw(51) << '\n'

@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -146,8 +146,8 @@ public:
 
 protected:
 	//Initial check of used template parameters in Process_N_D_Data
-	template <size_t NextDim, size_t... RestDim>
-	void DoCheckUpOfInput(std::vector<size_t>&) const;
+	template <size_t... RestDim>
+	constexpr void DoCheckUpOfInput() const;
 
 	//This is the method that call for ReadMePrintAboutCurrentProjectData
 	virtual void WriteReadMeFile();
@@ -206,6 +206,23 @@ inline void AssignValue<int>(int& assign, const std::string& aValue) {
 template<>
 inline void AssignValue<std::string>(std::string& assign, const std::string& aValue) {
 	assign = aValue;
+}
+
+
+
+template <size_t LeadElement, size_t CompareElement, size_t... RestArgs>
+[[nodiscard]] constexpr bool CheckPackUniqueness() {
+	if constexpr (LeadElement != CompareElement) {
+		if constexpr (sizeof...(RestArgs) != 0)
+			if constexpr (CheckUniqueness<LeadElement, RestArgs...>())
+				return CheckUniqueness<CompareElement, RestArgs...>();
+			else
+				return false;
+		else
+			return true;
+	}
+	else
+		return false;
 }
 
 
@@ -337,14 +354,7 @@ template <size_t... Dimensions>
 void ProcessCsvData<Args...>::Process_N_D_Data(const std::vector<double>& arg_binVector, const char* aFileName, const char* efficiencyFile) {
 	//first check if everything is ok for processing
 	double maxValue = DBL_MAX;
-	try {
-		std::vector<size_t> checkerVector{};
-		DoCheckUpOfInput<Dimensions...>(checkerVector); //check for error input x_x
-	}
-	catch (const std::string& err) {
-		G4Exception("ProcessCsvData<Args...>::Process_N_D_Data", "WE_ProcCsvData03", JustWarning, err.c_str());
-		return;
-	}
+	DoCheckUpOfInput<Dimensions...>();
 	//Now if efficiency should be used
 	if constexpr (sizeof...(Dimensions) != 1) {
 		m_efficiencyFlag = false;
@@ -528,33 +538,20 @@ template<typename... Args>
 #else
 template <typename... Args>
 #endif // _HAS_CXX20
-template <size_t NextDim, size_t... RestDim>
-void ProcessCsvData<Args...>::DoCheckUpOfInput(std::vector<size_t>& checkerVector) const {
-	checkerVector.emplace_back(NextDim);
-	if (std::is_same_v<std::tuple_element_t<NextDim, tuple_t>, std::string>) {
-		std::string err = "The current version of the class does not support std::string processing.\nHowever, this feature will be added in the future (at least for 1D case.)\nIf you have any idea why I should make it possible to use N_D strings, please let me know via the provided contact\nProceeding code without .csv data processing you requested!\n";
-		throw err;
+template <size_t... RestDim>
+constexpr void ProcessCsvData<Args...>::DoCheckUpOfInput() const {
+	static_assert((!std::is_same_v<std::tuple_element_t<RestDim, tuple_t>, std::string> && ...),
+		"The current version of the ProcessCsvData class does not support std::string processing! "
+		"However, this feature will be added in the future (at least for 1D case). If you have any "
+		"idea why I should make it possible to use N_D strings, please let me know via the provided "
+		"contact. Remove the string component to successfully build the code!\n");
+	if constexpr (sizeof...(RestDim) > 1) {
+		static_assert(CheckPackUniqueness<RestDim...>(),
+			"Non-unique elements detected in the parameter pack of a ProcessCsvData object! "
+			"While calling methods to process N_D data, all parameter-pack values must be "
+			"unique! That means, e.g., you can use <0, 1, 2, 5, 3>, but you cannot "
+			"<0, 1, 2, 5, 1> ('1' is not unique)!\n");
 	}
-	if constexpr (sizeof...(RestDim) == 0) {
-		std::set<size_t> checkUniqueSet;
-		for (size_t i : checkerVector)
-			checkUniqueSet.insert(i);
-		if (checkerVector.size() != checkUniqueSet.size()) {
-			std::string err = "While calling methods to process data and obtain final N_D data, you must use unique non-type template parameter values!\n";
-			err += "That means, e.g., you can use <0, 1, 2, 5, 3>, but you can't <0, 1, 2, 5, 1> ('1' is not unique)!\n";
-			err += "However, your input was:\n<";
-			for (auto i = checkerVector.begin(); i != checkerVector.end(); i++) {
-				if (i == checkerVector.end() - 1)
-					err += std::to_string(*i);
-				else
-					err += std::to_string(*i) + ", ";
-			}
-			err += ">\nProceeding code without .csv data processing you requested!\n";
-			throw err;
-		}
-	}
-	else
-		DoCheckUpOfInput<RestDim...>(checkerVector);
 }
 
 

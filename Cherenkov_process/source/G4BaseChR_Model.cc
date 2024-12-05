@@ -1,5 +1,5 @@
 //##########################################
-//#######         VERSION 0.5        #######
+//#######         VERSION 0.6        #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -22,7 +22,7 @@
 
 #define pow2(x) ((x) * (x))
 
-//two static help methods based around this translation unit - definition at the end of the file
+//two static helper methods based around this translation unit - definition at the end of the file
 static void PrintSimpleTables(const G4Material*, const std::vector<G4ChRPhysTableData::G4AroundBetaBasedValues>&);
 static void PrintMoreComplexTables(const unsigned char, const G4Material*, const G4ChRPhysTableData&);
 
@@ -163,14 +163,14 @@ ExitPrintFunction:
 //the following method has the same idea as the original G4Cerenkov... still, the original method
 //limited the usability of G4Cerenkov, so physics tables are built through betaValues now
 G4double G4BaseChR_Model::CalculateAverageNumberOfPhotons(const G4double aCharge, const G4double betaValue, const size_t materialID) {
-	constexpr double Rfact = 369.81 / (eV * cm);
+	constexpr G4double Rfact = 369.81 / (eV * cm);
 	if (betaValue <= 0)
 		return 0.;
 	const std::vector<G4ChRPhysTableData::G4AroundBetaBasedValues>& physDataVec = m_ChRPhysDataVec[materialID].m_aroundBetaValues;
 	// the following condition should never happen - it was already done in the StepLength method
 	/*if (physDataVec.size() <= 1)
 		return 0.;*/
-	double deltaE, ChRRightIntPart;
+	G4double deltaE, ChRRightIntPart;
 	if (betaValue <= physDataVec.front().m_betaValue) {
 		deltaE = 0.;
 		ChRRightIntPart = 0.;
@@ -233,7 +233,7 @@ G4bool G4BaseChR_Model::AddExoticRIndexPhysicsTable(const size_t materialID, G4b
 		auto extraOpParams = G4ExtraOpticalParameters::GetInstance();
 		for (const auto* i : *lvStore) {
 			// comparing material memory addresses
-			if (i->GetMaterial() == aMaterial && extraOpParams->FindChRMatData(i)->m_exoticRIndex) {
+			if (i->GetMaterial() == aMaterial && extraOpParams->FindChRMatData(i)->GetExoticRIndex()) {
 				forceExoticFlag = true;
 				break;
 			}
