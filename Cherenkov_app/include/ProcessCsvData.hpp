@@ -214,8 +214,8 @@ template <size_t LeadElement, size_t CompareElement, size_t... RestArgs>
 [[nodiscard]] constexpr bool CheckPackUniqueness() {
 	if constexpr (LeadElement != CompareElement) {
 		if constexpr (sizeof...(RestArgs) != 0)
-			if constexpr (CheckUniqueness<LeadElement, RestArgs...>())
-				return CheckUniqueness<CompareElement, RestArgs...>();
+			if constexpr (CheckPackUniqueness<LeadElement, RestArgs...>())
+				return CheckPackUniqueness<CompareElement, RestArgs...>();
 			else
 				return false;
 		else
