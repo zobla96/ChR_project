@@ -1,0 +1,59 @@
+#####===run2.mac for trying (debugging) purposes===
+/control/verbose 0
+/run/verbose 0
+/run/numberOfThreads 2
+
+#/ChR_project/DetectorConstruction/radiatorAngle <radiatorAngle> [<radiatorAngleUnit>]
+#/ChR_project/DetectorConstruction/radiatorThickness <radiatorThickness> [<radiatorThicknessUnit>]
+#/ChR_project/DetectorConstruction/radiatorMaterial [<materialName>]
+#/ChR_project/DetectorConstruction/noOfRadLayers <noOfRadLayers>
+#/ChR_project/DetectorConstruction/detectorRadius <detectorRadius> [<detectorRadiusUnit>]
+#/ChR_project/DetectorConstruction/detectorAngle <detectorAngle> [<detectorAngleUnit>]
+#/ChR_project/DetectorConstruction/detectorDistance <detectorDistance> [<detectorDistanceUnit>]
+#/ChR_project/DetectorConstruction/verboseLevel [<verboseLevel>]
+#/ChR_project/DetectorConstruction/checkOverlap [<checkOverlap>]
+
+#/ChR_project/PhysicsList/gammaRangeCut <gammaCut> [<gammaCutUnit>]
+#/ChR_project/PhysicsList/electronRangeCut <electronCut> [<electronCutUnit>]
+#/ChR_project/PhysicsList/positronRangeCut <positronCut> [<positronCutUnit>]
+#/ChR_project/PhysicsList/protonRangeCut <protonCut> [<protonCutUnit>]
+#/ChR_project/PhysicsList/selectEmPhysics <emPhysicsListOptionID>
+
+/run/initialize
+
+#/process/optical/stdChRProcess/dumpInfo
+#/process/optical/stdChRProcess/processDescription
+#/process/optical/stdChRProcess/isApplicable <particleName>
+#/process/optical/stdChRProcess/minEnergy <particleName> <materialName>
+#/process/optical/stdChRProcess/useEnergyLoss [<newFlagValue>]
+#/process/optical/stdChRProcess/noOfBetaSteps <noOfBetaSteps>
+#/process/optical/stdChRProcess/printChRPhysicsVector [<printLevel>] [<materialName>]
+#/process/optical/stdChRProcess/changeUseOfExoticRIndex <materialName> <boolCondition>
+
+#/process/optical/G4ChRProcess/dumpInfo
+#/process/optical/G4ChRProcess/processDescription
+#/process/optical/G4ChRProcess/isApplicable <particleName>
+#/process/optical/G4ChRProcess/minEnergy <particleName> <materialName>
+
+#/process/optical/G4ChRProcess/Models/useEnergyLossInModels [<newFlagValue>]
+#/process/optical/G4ChRProcess/Models/noOfBetaSteps <noOfBetaSteps>
+#/process/optical/G4ChRProcess/Models/changeModelVerbose [<verboseLevel>]
+#/process/optical/G4ChRProcess/Models/printBaseChRPhysicsVector [<printLevel>] [<materialName>]
+#/process/optical/G4ChRProcess/Models/ThinChRModelMultiplier <valueK>
+
+#/process/optical/G4ChRProcess/extraOptParams/setLVThickness <logicVolumeName> <thicknessValue> [<thicknessUnit>]
+#/process/optical/G4ChRProcess/extraOptParams/scanForNewLV
+#/process/optical/G4ChRProcess/extraOptParams/ChRexecuteModelID <logicalVolumeName> <modelID>
+#/process/optical/G4ChRProcess/extraOptParams/exoticRIndex <LV_name> <exoticRIndexFlag>
+#/process/optical/G4ChRProcess/extraOptParams/printChRMatData [<LV_name>]
+
+#/ChR_project/PrimaryGenerator/beamSigma <sigmaGauss> [<sigmaGaussUnit>]
+#/ChR_project/PrimaryGenerator/thetaBeamDivergence <thetaBeamDivergence> [<thetaBeamDivergenceUnit>]
+#/ChR_project/PrimaryGenerator/particleEnergy <primaryEnergy> [<primaryEnergyUnit>]
+#/ChR_project/PrimaryGenerator/noOfPrimaryParticles <noOfPrimaries>
+#/ChR_project/PrimaryGenerator/massNo <massNo>
+#/ChR_project/PrimaryGenerator/atomicNo <atomicNo>
+
+#/ChR_project/SteppingAction/verboseLevel [<verboseLevel>]
+
+/run/beamOn 1000
