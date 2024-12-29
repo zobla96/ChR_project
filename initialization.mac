@@ -1,0 +1,79 @@
+##### initialization.mac - going graphical #####
+
+#####################################
+###### G4State_PreInit  START #######
+#####################################
+/control/verbose 2
+/control/saveHistory
+/run/verbose 2
+/run/numberOfThreads 2
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_app_exe PreInit START
+#####++++++++++++++++++++++++++++++++
+
+### Used to change the radiator angle relative to the primary beam
+### Default unit: deg
+#/ChR_project/DetectorConstruction/radiatorAngle <radiatorAngle> [<radiatorAngleUnit>]
+
+### Used to change the radiator half-thickness (experimental full-thickness: 200 um)
+### Default unit: um (micrometer)
+#/ChR_project/DetectorConstruction/radiatorThickness <radiatorThickness> [<radiatorThicknessUnit>]
+
+### Used to change the material of the radiator ("Diamond" is needed for low-energy ions)
+### Default: G4_SILICON_DIOXIDE (NOTE: it is used as "quartz")
+### Candidates: "G4_SILICON_DIOXIDE" and "Diamond"
+### In non-standard runs always "fake_quartz" - to change, modify DetectorConstruction.cc
+#/ChR_project/DetectorConstruction/radiatorMaterial [<materialName>]
+
+### Used to change the detector radius (experimental detector radius: 35 um)
+### Defauly unit: um (micrometer)
+#/ChR_project/DetectorConstruction/detectorRadius <detectorRadius> [<detectorRadiusUnit>]
+
+### Used to change the detector angle (experimental detector angle: 59.5 deg)
+### Default unit: deg
+#/ChR_project/DetectorConstruction/detectorAngle <detectorAngle> [<detectorAngleUnit>]
+
+### Used to change the detector distance relative to the radiator (experimental detector distance: 37.6 cm)
+### Default unit: cm (centimeter)
+#/ChR_project/DetectorConstruction/detectorDistance <detectorDistance> [<detectorDistanceUnit>]
+
+
+### Used to set gamma-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/gammaRangeCut <gammaCut> [<gammaCutUnit>]
+
+### Used to set electron-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/electronRangeCut <electronCut> [<electronCutUnit>]
+
+### Used to set positron-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/positronRangeCut <positronCut> [<positronCutUnit>]
+
+### Used to set proton-cut value for the radiator volume
+### Default unit: um (micrometer)
+#/ChR_project/PhysicsList/protonRangeCut <protonCut> [<protonCutUnit>]
+
+### Used to change electromagnetic physics that will be used. Options:
+### 0. G4EmStandardPhysics; 1. G4EmStandardPhysics_option1; 2. G4EmStandardPhysics_option2;
+### 3. G4EmStandardPhysics_option3; 4. G4EmStandardPhysics_option4; 5. G4EmLivermorePhysics;
+### 6. G4EmLowEPPhysics; 7. G4EmPenelopePhysics; 8. G4EmStandardPhysicsGS;
+### 9. G4EmStandardPhysicsSS; 10. G4EmStandardPhysicsWVI
+#/ChR_project/PhysicsList/selectEmPhysics <emPhysicsListOptionID>
+
+### Used to change optical physics that will be used. Options:
+### 0. G4OpticalPhysics; 1. G4OpticalPhysics_option1; 2. G4OpticalPhysics_option2
+#/ChR_project/PhysicsList/selectOpticalPhysics <opticalPhysID>
+
+#####++++++++++++++++++++++++++++++++
+##### ChR_app_exe PreInit END
+#####++++++++++++++++++++++++++++++++
+
+#####################################
+####### G4State_PreInit  END ########
+#####################################
+
+/run/initialize
+
+/control/execute vis.mac
