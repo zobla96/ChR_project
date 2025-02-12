@@ -130,5 +130,5 @@ radiation in a dispersive medium (quartz), Phys. Lett. A 417 (2021) 127680;
 DOI: [10.1016/j.physleta.2021.127680](https://www.sciencedirect.com/science/article/pii/S0375960121005442)
 
 [^2]: B. Đurnić, A. Potylitsyn, A. Bogdanov, S. Gogolev, On the rework and
-development of new Geant4 Cherenkov models, (coming soon);
-DOI: (coming soon)
+development of new Geant4 Cherenkov models, JINST 20 (2025) P02008;
+DOI: [10.1088/1748-0221/20/02/P02008](https://doi.org/10.1088/1748-0221/20/02/P02008)
