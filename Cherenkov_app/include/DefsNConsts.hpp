@@ -27,7 +27,7 @@
 // 1 -> standard ChR project with a thin target
 // 0 -> only obtain the energy distribution of ChR information (to check exotic refractive indices)
   #if 1
-  #define boostEfficiency
+//  #define boostEfficiency
 // 1 -> to enable boostEfficiency - tempering with photon emission angles so they would not fly all around, but
 //      towards the detector. If changing the geometry, one will also have a warning flag to prevent a possible error
 // 0 -> no boosting efficiency - the phi angle of emitted Cherenkov photons is in the range [0, 2*pi)

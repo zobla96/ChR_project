@@ -15,6 +15,7 @@
 #include "G4ThreeVector.hh"
 //std:: headers
 #include <vector>
+#include <utility>
 
 struct G4ChRPhysTableData {
 	struct G4AroundBetaBasedValues;

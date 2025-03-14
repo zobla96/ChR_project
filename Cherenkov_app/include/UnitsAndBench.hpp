@@ -100,7 +100,7 @@ beginChR
 
 template<typename D>
 class TimeBench final {
-	static_assert(std::chrono::_Is_duration_v<D>, "You must use std::chrono::duration with the class ChR::TimeBench!");
+	static_assert(std::chrono::__is_duration_v<D>, "You must use std::chrono::duration with the class ChR::TimeBench!");
 	using theClock = std::chrono::time_point<std::chrono::high_resolution_clock>;
 public:
 	TimeBench(const char* functionName = "") : m_str(functionName) {
