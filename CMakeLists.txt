@@ -18,7 +18,8 @@ project(ChR_project
 	LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
-option(USE_MY_CONFIGURATION "To use non-default targets' settings and flags" ON)
+#option(USE_MY_CONFIGURATION "To use non-default targets' settings and flags" ON)
+option(USE_MY_CONFIGURATION "To use non-default targets' settings and flags" OFF)
 
 #
 # I make changes for my settings (flags) as I haven't

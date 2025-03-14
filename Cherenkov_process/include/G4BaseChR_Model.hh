@@ -69,6 +69,7 @@ G4VProcess virtual methods.
 
 //G4 headers
 #include "G4ForceCondition.hh"
+#include "G4Material.hh"
 #include "G4ChRPhysicsTableData.hh"
 
 class G4Track;
@@ -98,7 +99,17 @@ public:
 	virtual G4VParticleChange* PostStepModelDoIt(const G4Track& aTrack, const G4Step& aStep, const G4CherenkovMatData& selectedData) = 0;
 
 	virtual inline void PrepareModelPhysicsTable(const G4ParticleDefinition&) {};
-	virtual inline void BuildModelPhysicsTable(const G4ParticleDefinition&);
+        virtual inline void BuildModelPhysicsTable(const G4ParticleDefinition&) {
+              std::size_t numOfMaterials = G4Material::GetNumberOfMaterials();
+              if (m_ChRPhysDataVec.size() == numOfMaterials)
+                      return;
+              m_ChRPhysDataVec = G4ChRPhysicsTableVector{}; //in case some materials were deleted - rebuilding all physics tables
+              m_ChRPhysDataVec.reserve(numOfMaterials);
+              for (size_t i = 0; i < numOfMaterials; i++)
+                      AddExoticRIndexPhysicsTable(i);
+              if(m_verboseLevel > 0)
+                      PrintChRPhysDataVec();
+        }
 
 	//it might be good to load binaries for some more complex physics tables
 	virtual inline G4bool StoreModelPhysicsTable(const G4ParticleDefinition*, const G4String&, G4bool) { return true; }

@@ -109,17 +109,17 @@ G4double G4BaseChR_Model::PostStepModelIntLength(const G4Track& aTrack, G4double
 	return stepLimit;
 }
 
-void G4BaseChR_Model::BuildModelPhysicsTable(const G4ParticleDefinition&) {
-	std::size_t numOfMaterials = G4Material::GetNumberOfMaterials();
-	if (m_ChRPhysDataVec.size() == numOfMaterials)
-		return;
-	m_ChRPhysDataVec = G4ChRPhysicsTableVector{}; //in case some materials were deleted - rebuilding all physics tables
-	m_ChRPhysDataVec.reserve(numOfMaterials);
-	for (size_t i = 0; i < numOfMaterials; i++)
-		AddExoticRIndexPhysicsTable(i);
-	if(m_verboseLevel > 0)
-		PrintChRPhysDataVec();
-}
+//void G4BaseChR_Model::BuildModelPhysicsTable(const G4ParticleDefinition&) {
+//	std::size_t numOfMaterials = G4Material::GetNumberOfMaterials();
+//	if (m_ChRPhysDataVec.size() == numOfMaterials)
+//		return;
+//	m_ChRPhysDataVec = G4ChRPhysicsTableVector{}; //in case some materials were deleted - rebuilding all physics tables
+//	m_ChRPhysDataVec.reserve(numOfMaterials);
+//	for (size_t i = 0; i < numOfMaterials; i++)
+//		AddExoticRIndexPhysicsTable(i);
+//	if(m_verboseLevel > 0)
+//		PrintChRPhysDataVec();
+//}
 
 void G4BaseChR_Model::PrintChRPhysDataVec(const unsigned char printLevel, const G4Material* aMaterial) {
 	const G4MaterialTable* theMaterialTable = G4Material::GetMaterialTable();
