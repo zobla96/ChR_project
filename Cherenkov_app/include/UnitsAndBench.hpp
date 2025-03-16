@@ -98,30 +98,61 @@ using namespace ChR::myLiterals;
 
 beginChR
 
+template<typename T>
+constexpr bool is_Duration_v = false;
+template<typename T, typename Period>
+constexpr bool is_Duration_v<std::chrono::duration<T, Period>> = true;
+
 template<typename D>
 class TimeBench final {
-	static_assert(std::chrono::_Is_duration_v<D>, "You must use std::chrono::duration with the class ChR::TimeBench!");
+	// ChR:: just to emphasize the origin of is_Duration_v
+	static_assert(ChR::is_Duration_v<D>, "You must use std::chrono::duration with the class TimeBench!");
 	using theClock = std::chrono::time_point<std::chrono::high_resolution_clock>;
 public:
-	TimeBench(const char* functionName = "") : m_str(functionName) {
-		m_start = std::chrono::high_resolution_clock::now();
-	}
+	TimeBench(const char* timerName = "")
+		: m_name(timerName), m_timerStart(std::chrono::high_resolution_clock::now()) {}
+	TimeBench(const std::string& timerName)
+		: m_name(timerName), m_timerStart(std::chrono::high_resolution_clock::now()) {}
+	TimeBench(const G4String& timerName)
+		: m_name(timerName), m_timerStart(std::chrono::high_resolution_clock::now()) {}
 	~TimeBench() {
+		timerTime(m_name);
+	}
+	inline void reset() {
+		m_timerStart = std::chrono::high_resolution_clock::now();
+	}
+	inline void timerTime(const G4String& nameString) const {
+		G4String aReport{ "The time period " };
 #if _HAS_CXX20
 		D thePeriod = std::chrono::time_point_cast<D>(std::chrono::high_resolution_clock::now()).time_since_epoch()
-			- std::chrono::time_point_cast<D>(m_start).time_since_epoch();
+			- std::chrono::time_point_cast<D>(m_timerStart).time_since_epoch();
 #else
 		long long thePeriod = std::chrono::time_point_cast<D>(std::chrono::high_resolution_clock::now()).time_since_epoch().count()
-			- std::chrono::time_point_cast<D>(m_start).time_since_epoch().count();
-#endif // _HAS_CXX20
-		if (m_str[0] == '\0')
-			std::cout << "The time period of TimeBench was: " << thePeriod << '\n';
+			- std::chrono::time_point_cast<D>(m_timerStart).time_since_epoch().count();
+#endif
+		std::stringstream aStr{};
+		aStr << thePeriod;
+		if (nameString.empty())
+			aReport += G4String{ "was: " } + aStr.str().c_str() + "\n";
 		else
-			std::cout << "The time period of TimeBench in the \"" << m_str << "\" scope was: " << thePeriod << '\n';
+			aReport += G4String{ "of \"" } + nameString + "\" was: " + aStr.str().c_str() + "\n";
+		std::cout << aReport;
+	}
+	inline void SetName(const char* aName) {
+		m_name = aName;
+	}
+	inline void SetName(const std::string& aName) {
+		m_name = aName;
+	}
+	inline void SetName(const G4String& aName) {
+		m_name = aName;
+	}
+	inline const G4String& GetName() const {
+		return m_name;
 	}
 private:
-	theClock m_start;
-	const char* m_str;
+	theClock m_timerStart;
+	G4String m_name;
 };
 
 endChR

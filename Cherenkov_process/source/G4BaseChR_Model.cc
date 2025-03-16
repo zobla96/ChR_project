@@ -9,9 +9,8 @@
 //G4 headers
 #include "G4BaseChR_Model.hh"
 #include "G4AccessPhysicsVectors.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 #include "G4Track.hh"
-#include "G4Material.hh"
 #include "G4LossTableManager.hh"
 #include "G4OpticalParameters.hh"
 #include "G4SystemOfUnits.hh"
@@ -107,18 +106,6 @@ G4double G4BaseChR_Model::PostStepModelIntLength(const G4Track& aTrack, G4double
 
 	*condition = StronglyForced;
 	return stepLimit;
-}
-
-void G4BaseChR_Model::BuildModelPhysicsTable(const G4ParticleDefinition&) {
-	std::size_t numOfMaterials = G4Material::GetNumberOfMaterials();
-	if (m_ChRPhysDataVec.size() == numOfMaterials)
-		return;
-	m_ChRPhysDataVec = G4ChRPhysicsTableVector{}; //in case some materials were deleted - rebuilding all physics tables
-	m_ChRPhysDataVec.reserve(numOfMaterials);
-	for (size_t i = 0; i < numOfMaterials; i++)
-		AddExoticRIndexPhysicsTable(i);
-	if(m_verboseLevel > 0)
-		PrintChRPhysDataVec();
 }
 
 void G4BaseChR_Model::PrintChRPhysDataVec(const unsigned char printLevel, const G4Material* aMaterial) {

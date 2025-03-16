@@ -5,7 +5,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(STATUS "You are trying to make your build in the source dir.")
 	message(STATUS "Don't do that. While building the project, make sure")
 	message(STATUS "to separate the build and source folders!")
-	message(STATUS "Feel free to delete the created CMakeFiles and CMakeCache.txt")
+	message(STATUS "Feel free to delete the created CMakeFiles/ and CMakeCache.txt")
 	message(FATAL_ERROR "TRYING TO BUILD THE PROJECT IN THE SOURCE DIRECTORY!")
 endif()
 
@@ -20,25 +20,36 @@ project(ChR_project
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 option(USE_MY_CONFIGURATION "To use non-default targets' settings and flags" ON)
 
-#
-# I make changes for my settings (flags) as I haven't
-# tested everything on other compilers and I don't know
-# whether the same flags are used (I think not)
-#
 set(THE_DEFAULT_CXX_FLAGS "" CACHE STRING "The backup of default flags")
-if(USE_MY_CONFIGURATION)
-	set(CMAKE_CXX_STANDARD 20)
+
+# a function to speed up the compilation process (generate object files with multiple threads)
+function(use_multithread_compile mtFlag)
 	if(THE_DEFAULT_CXX_FLAGS STREQUAL "")
 		set(THE_DEFAULT_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE INTERNAL "Flags not shown in GUI - defaults not modifiable")
 	endif()
-	set(CMAKE_CXX_FLAGS "${THE_DEFAULT_CXX_FLAGS} /MP" CACHE STRING "Setting user non-default flags" FORCE)
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO /OPT:REF /OPT:ICF" CACHE STRING "Setting my release flags - additional optimization flags (I beleive those are used by default, but just in case)" FORCE)
+	set(CMAKE_CXX_FLAGS "${THE_DEFAULT_CXX_FLAGS} ${mtFlag}" CACHE STRING "Setting user non-default flags" FORCE)
+	message(STATUS ${CMAKE_CXX_FLAGS})
+endfunction()
+
+if(USE_MY_CONFIGURATION)
+	set(CMAKE_CXX_STANDARD 20)
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		use_multithread_compile("/MP")
+	### for GNU and Clang, not sure about other compilers
+	elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		include(ProcessorCount)
+		ProcessorCount(N_CORES)
+		if(NOT N_CORES EQUAL 0)
+			use_multithread_compile("-j${N_CORES}")
+		else()
+			message(WARNING "Failed to determine the number of processors. Compiling with a single thraed")
+		endif()
+	endif()
 
 else() ###(!USE_MY_CONFIGURATION)
 	set(CMAKE_CXX_STANDARD 17)
 	if(NOT THE_DEFAULT_CXX_FLAGS STREQUAL "")
 		set(CMAKE_CXX_FLAGS "${THE_DEFAULT_CXX_FLAGS}" CACHE STRING "Flags used by the CXX compiler during all build types." FORCE)
-		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO" CACHE STRING "Flags used by the linker during RELEASE builds." FORCE)
 		set(THE_DEFAULT_CXX_FLAGS "" CACHE INTERNAL "The backup of default flags")
 	endif() ###(end of THE_DEFAULT_CXX_FLAGS)
 

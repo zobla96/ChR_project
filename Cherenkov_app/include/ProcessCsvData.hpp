@@ -60,7 +60,7 @@ will add a task (lambda function) which will be execute by a single thread of th
 #include "G4RunManager.hh"
 #include "G4ThreadPool.hh"
 #include "G4TaskGroup.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 //std:: headers
 #include <tuple>
 #include <type_traits>

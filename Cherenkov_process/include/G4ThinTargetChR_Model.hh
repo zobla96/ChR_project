@@ -22,7 +22,6 @@ Read the "DumpModelInfo" method
 //std:: headers
 #include <unordered_map>
 
-class G4VTouchable;
 class G4VPhysicalVolume;
 class G4AffineTransform;
 class G4Box;

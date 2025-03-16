@@ -7,7 +7,7 @@
 //##########################################
 
 //G4 headers
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 #include "G4AffineTransform.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
@@ -19,7 +19,7 @@ G4AffineTransform GetLocalToGlobalTransformOfPhysicalVolume(const G4VPhysicalVol
 	const G4PhysicalVolumeStore* theStore = G4PhysicalVolumeStore::GetInstance();
 	const G4LogicalVolume* aMotherLogic = aPhysicalVolume->GetMotherLogical();
 	if (aMotherLogic == nullptr)
-		return std::move(aFinalTransform);
+		return aFinalTransform;
 	// find the mother volume - using brute force
 	for (const G4VPhysicalVolume* nextPhys : *theStore) {
 		if (nextPhys->GetLogicalVolume() != aMotherLogic)
@@ -40,7 +40,7 @@ G4AffineTransform GetLocalToGlobalTransformOfPhysicalVolume(const G4VPhysicalVol
 		If that's the case, this function should be slightly modified and there would be no way
 		to return a single G4AffineTransform
 		*/
-		return std::move(nextTransform);
+		return nextTransform;
 	}
 	// if we are here, we did not find a mother volume so we throw
 	throw no_mother_physical_volume{};

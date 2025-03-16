@@ -15,7 +15,7 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 #include "G4UIcmdWithADouble.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 #include "G4TransportationManager.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4AffineTransform.hh"

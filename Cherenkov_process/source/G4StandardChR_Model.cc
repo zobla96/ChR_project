@@ -13,7 +13,7 @@
 #include "G4OpticalPhoton.hh"
 #include "G4OpticalParameters.hh"
 #include "G4ExtraOpticalParameters.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 
 //=========public G4StandardChR_Model:: methods=========
 

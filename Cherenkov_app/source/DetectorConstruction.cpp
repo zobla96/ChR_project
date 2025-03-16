@@ -72,13 +72,11 @@ void DetectorConstruction::LoadWorld() {
 }
 
 void DetectorConstruction::LoadRadiator() {
+#ifndef standardRun
+	m_radiatorMaterialName = "fake_quartz";
+#endif // !standardRun
 	G4Tubs* radiatorSolid = new G4Tubs{ "radiatorSolid", 0., 3._cm, m_radiatorThickness, 0., 360._deg };
-#ifdef standardRun
 	G4LogicalVolume* radiatorLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLogic" };
-#else
-	G4LogicalVolume* radiatorLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial("fake_quartz"), "radiatorLogic" };
-	//G4LogicalVolume* radiatorLogic = new G4LogicalVolume{ radiatorSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLogic" };
-#endif // standardRun
 	if (dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList())->GetPhysics("OpticalPhysics_op2")) {
 		auto extraOptParams = G4ExtraOpticalParameters::GetInstance();
 		extraOptParams->AddNewChRMatData(radiatorLogic, G4CherenkovMatData{ 1 });
@@ -96,11 +94,7 @@ void DetectorConstruction::LoadRadiator() {
 	//layerThickness -> half-thickness
 	double layerThickness = m_radiatorThickness / m_noOfRadLayers;
 	G4Tubs* radLayerSolid = new G4Tubs{ "radiatorLayerSolid", 0., 3._cm, layerThickness, 0., 360._deg };
-#ifdef standardRun
 	G4LogicalVolume* radLayerLogic = new G4LogicalVolume{ radLayerSolid, G4Material::GetMaterial(m_radiatorMaterialName), "radiatorLayerLogic" };
-#else
-	G4LogicalVolume* radLayerLogic = new G4LogicalVolume{ radLayerSolid, G4Material::GetMaterial("fake_quartz"), "radiatorLayerLogic" };
-#endif // standardRun
 	radLayerLogic->SetVisAttributes(m_visAttrHide.get());
 	if (dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList())->GetPhysics("OpticalPhysics_op2")) {
 		auto extraOptParams = G4ExtraOpticalParameters::GetInstance();
