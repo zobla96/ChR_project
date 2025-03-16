@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -10,7 +10,7 @@
 #include "G4StandardCherenkovProcess.hh"
 #include "G4StandardChRProcess_Messenger.hh"
 #include "G4SystemOfUnits.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 #include "G4AccessPhysicsVectors.hh"
 #include "G4OpticalParameters.hh"
 #include "G4LossTableManager.hh"

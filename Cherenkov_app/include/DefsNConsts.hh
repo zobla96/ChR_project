@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -77,9 +77,15 @@ inline thread_local TrackingAction* g_trackingAction = nullptr;
 inline thread_local SteppingAction* g_steppingAction = nullptr;
 #endif // standardRun
 
+template<typename T>
+constexpr bool is_Duration_v = false;
+template<typename T, typename Period>
+constexpr bool is_Duration_v<std::chrono::duration<T, Period>> = true;
+
 template<typename D>
 class TimeBench final {
-	static_assert(std::chrono::_Is_duration_v<D>, "You must use std::chrono::duration with the class TimeBench!");
+	// ChR:: just to emphasize the origin of is_Duration_v
+	static_assert(ChR::is_Duration_v<D>, "You must use std::chrono::duration with the class TimeBench!");
 	using theClock = std::chrono::time_point<std::chrono::high_resolution_clock>;
 public:
 	TimeBench(const char* timerName = "")

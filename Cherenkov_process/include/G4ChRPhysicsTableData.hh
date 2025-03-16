@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -15,6 +15,7 @@
 #include "G4ThreeVector.hh"
 //std:: headers
 #include <vector>
+#include <utility>
 
 struct G4ChRPhysTableData {
 	struct G4AroundBetaBasedValues;

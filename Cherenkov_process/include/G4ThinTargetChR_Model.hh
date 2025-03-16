@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -22,7 +22,6 @@ Read the "DumpModelInfo" method
 //std:: headers
 #include <unordered_map>
 
-class G4VTouchable;
 class G4VPhysicalVolume;
 class G4AffineTransform;
 class G4Box;

@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -26,6 +26,7 @@
 #include "G4ParticleGun.hh"
 #include "G4Filesystem.hh"
 #include "G4TaskGroup.hh"
+#include "G4GlobalConfig.hh"
 // std:: headers
 #include <ctime>
 
@@ -288,9 +289,13 @@ static void PrintRunDataIntoReadMe(std::ostream& outS) {
 		<< std::setw(16) << ' ' << std::setw(16) << std::setprecision(4) << std::defaultfloat << "Distance:" << g_detectorConstruction->GetDetectorDistance() / mm << " mm\n"
 		<< std::setw(16) << std::right << std::setfill('+') << '\n' << std::setfill(' ');
 	outS << std::setw(61) << std::setfill('=') << '\n' << "PrimaryGeneratorAction used values:\n";
+#ifdef G4MULTITHREADED
 	G4TaskGroup<void> aTaskGroup{};
 	aTaskGroup.exec([&outS] {Task_PrintPrimaryGenActionData(outS); }); //seems like the simplest way to wrap a task
 	aTaskGroup.wait();
+#else // !G4MULTITHREADED
+	Task_PrintPrimaryGenActionData(outS);
+#endif
 	const PhysicsList* physList = dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList());
 	outS << std::right << std::setw(61) << std::setfill('=') << '\n' << "PhysicsList used values:\n" << std::setfill(' ') << std::left
 		<< std::setw(29) << "EM used model:" << physList->GetEMPhysicsInUse() << '\n'
@@ -301,8 +306,12 @@ static void PrintRunDataIntoReadMe(std::ostream& outS) {
 		<< std::setw(29) << "Radiator proton cutValue:" << physList->GetRadiatorRangeCuts_proton() / um << " um\n";
 	outS << std::right << std::setw(61) << std::setfill('=') << '\n' << "SteppingAction used values:\n" << std::setfill(' ') << std::left;
 #ifdef standardRun
+  #ifdef G4MULTITHREADED
 	aTaskGroup.exec([&outS] { Task_SteppingActionData(outS); });
 	aTaskGroup.wait();
+  #else // !G4MULTITHREADED
+	Task_SteppingActionData(outS);
+  #endif // G4MULTITHREADED
 #endif // standardRun
 	// now Cherenkov models....
 	if (physList->GetOpticalPhysicsInUse() == UseOptical::G4OpticalPhysics_option1) {
@@ -362,8 +371,12 @@ static void PrintRunDataIntoReadMe(std::ostream& outS) {
 	}
 #ifdef boostEfficiency
 	outS << std::right << std::setw(61) << std::setfill('=') << '\n' << "Limits in StackingAction:\n" << std::setfill(' ') << std::left;
+  #ifdef G4MULTITHREADED
 	aTaskGroup.exec([&outS] { Task_StackingActionData(outS); }); //seems like the simplest way to wrap a task
 	aTaskGroup.wait();
+  #else // !G4MULTITHREADED
+	Task_StackingActionData(outS);
+  #endif // G4MULTITHREADED
 #endif // boostEfficiency
 #ifdef followMinMaxValues
 	outS << std::right << std::setw(61) << std::setfill('=') << '\n' << "The observed limits in this run were:\n" << std::setfill(' ') << std::left;

@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -70,13 +70,13 @@ G4VProcess virtual methods.
 //G4 headers
 #include "G4ForceCondition.hh"
 #include "G4ChRPhysicsTableData.hh"
+#include "G4Material.hh"
 
 class G4Track;
 class G4VParticleChange;
 class G4ParticleChange;
 class G4ParticleDefinition;
 class G4Step;
-class G4Material;
 class G4ExtraOpticalParameters_Messenger;
 struct G4CherenkovMatData;
 
@@ -183,6 +183,18 @@ const G4BaseChR_Model::G4ChRPhysicsTableVector& G4BaseChR_Model::GetChRPhysDataV
 }
 
 //=======Additional inlines=======
+void G4BaseChR_Model::BuildModelPhysicsTable(const G4ParticleDefinition&) {
+	std::size_t numOfMaterials = G4Material::GetNumberOfMaterials();
+	if (m_ChRPhysDataVec.size() == numOfMaterials)
+		return;
+	m_ChRPhysDataVec = G4ChRPhysicsTableVector{}; //in case some materials were deleted - rebuilding all physics tables
+	m_ChRPhysDataVec.reserve(numOfMaterials);
+	for (size_t i = 0; i < numOfMaterials; i++)
+		AddExoticRIndexPhysicsTable(i);
+	if (m_verboseLevel > 0)
+		PrintChRPhysDataVec();
+}
+
 void G4BaseChR_Model::PrepareWorkerModelPhysicsTable(const G4ParticleDefinition& aParticle) {
 	PrepareModelPhysicsTable(aParticle);
 }

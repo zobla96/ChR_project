@@ -1,5 +1,5 @@
 ﻿//##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -15,7 +15,7 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 #include "G4UIcmdWithADouble.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 #include "G4TransportationManager.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4AffineTransform.hh"

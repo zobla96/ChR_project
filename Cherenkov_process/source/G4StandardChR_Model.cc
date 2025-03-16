@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.0.1       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -13,7 +13,7 @@
 #include "G4OpticalPhoton.hh"
 #include "G4OpticalParameters.hh"
 #include "G4ExtraOpticalParameters.hh"
-#include "SomeGlobalNamespace.hh"
+#include "GlobalFunctions.hh"
 
 //=========public G4StandardChR_Model:: methods=========
 
