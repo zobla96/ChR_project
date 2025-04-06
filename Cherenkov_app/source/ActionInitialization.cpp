@@ -27,13 +27,13 @@ void ActionInitialization::BuildForMaster() const {
 void ActionInitialization::Build() const {
 	g_runAction = new RunAction{};
 	SetUserAction(g_runAction);
-	g_eventAction = new EventAction{};
-	SetUserAction(g_eventAction);
 	g_primaryGenerator = new PrimaryGeneratorAction{};
 	SetUserAction(g_primaryGenerator);
 	g_stackingAction = new StackingAction{};
 	SetUserAction(g_stackingAction);
 #ifdef standardRun
+	g_eventAction = new EventAction{};
+	SetUserAction(g_eventAction);
 	g_trackingAction = new TrackingAction{};
 	SetUserAction(g_trackingAction);
 	g_steppingAction = new SteppingAction{};

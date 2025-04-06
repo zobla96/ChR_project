@@ -12,7 +12,7 @@
 #include "G4StandardCherenkovProcess.hh"
 #include "G4ThinTargetChR_Model.hh"
 
-#define PrintReadMeTrueOrFalse(someBoolValue)		\
+#define RunA_PrintReadMeTrueOrFalse(someBoolValue)	\
 	if (someBoolValue)								\
 			outFS << "true\n";						\
 		else										\
@@ -75,7 +75,7 @@ void ProcessCsvData<int, double, double, double, double>::ReadMePrintAboutCurren
 		<< std::setw(16) << std::right << std::setfill('+') << '\n' << std::setfill(' ') << std::left
 		<< std::setw(16) << "Verbose level:" << std::to_string(g_detectorConstruction->GetVerboseLevel()) << '\n'
 		<< std::setw(16) << "Overlap check:";
-	PrintReadMeTrueOrFalse(g_detectorConstruction->GetCheckOverlap());
+	RunA_PrintReadMeTrueOrFalse(g_detectorConstruction->GetCheckOverlap());
 	outFS << std::right << std::setw(61) << std::setfill('=') << '\n' << "PrimaryGeneratorAction used values:\n";
 	m_taskGroup.exec([&outFS] {Task_PrintPrimaryGenActionData(outFS); }); //seems like the simplest way to wrap a task
 	m_taskGroup.wait();
@@ -107,7 +107,7 @@ void ProcessCsvData<int, double, double, double, double>::ReadMePrintAboutCurren
 		outFS << std::right << std::setw(61) << std::setfill('=') << '\n' << "G4StandardCherenkovProcess used values:\n" << std::setfill(' ') << std::left;
 		const G4StandardCherenkovProcess* chProc = dynamic_cast<const G4StandardCherenkovProcess*>(G4ProcessTable::GetProcessTable()->FindProcess("StandardCherenkov", "e-"));
 		outFS << std::setw(21) << "Energy loss flag:";
-		PrintReadMeTrueOrFalse(chProc->GetUseEnergyLoss());
+		RunA_PrintReadMeTrueOrFalse(chProc->GetUseEnergyLoss());
 		outFS << std::setw(21) << "No of beta steps:" << std::to_string(chProc->GetNoOfBetaSteps()) << '\n';
 	}
 	else if (opticalPhysicsName == "OpticalPhysics_op2") {
@@ -119,9 +119,9 @@ void ProcessCsvData<int, double, double, double, double>::ReadMePrintAboutCurren
 				<< std::setw(18) << key->GetName() << "-> "
 				<< std::setw(21) << std::defaultfloat << "ChR model ID:" << value.m_executeModel << '\n'
 				<< std::setw(21) << ' ' << std::setw(21) << "Exotic RIndex flag:";
-			PrintReadMeTrueOrFalse(value.GetExoticRIndex());
+			RunA_PrintReadMeTrueOrFalse(value.GetExoticRIndex());
 			outFS << std::setw(21) << ' ' << std::setw(21) << "Initial exotic flag:";
-			PrintReadMeTrueOrFalse(value.GetExoticInitialFlag());
+			RunA_PrintReadMeTrueOrFalse(value.GetExoticInitialFlag());
 			outFS << std::setw(21) << ' ' << std::setw(21) << "Min for axis:";
 			if (value.GetMinAxis() == 0)
 				outFS << "x\n";
@@ -151,9 +151,9 @@ void ProcessCsvData<int, double, double, double, double>::ReadMePrintAboutCurren
 			outFS << std::right << std::setw(21) << std::setfill('+') << '\n' << std::setfill(' ') << std::left
 				<< std::setw(18) << modelID << "-> " << std::setw(24) << "Model name:" << aModel->GetChRModelName() << '\n'
 				<< std::setw(21) << ' ' << std::setw(24) << "Finite thickness flag:";
-			PrintReadMeTrueOrFalse(aModel->GetFiniteThicknessCondition());
+			RunA_PrintReadMeTrueOrFalse(aModel->GetFiniteThicknessCondition());
 			outFS << std::setw(21) << ' ' << std::setw(24) << "Energy loss flag:";
-			PrintReadMeTrueOrFalse(aModel->GetUseModelWithEnergyLoss());
+			RunA_PrintReadMeTrueOrFalse(aModel->GetUseModelWithEnergyLoss());
 			outFS << std::setw(21) << ' ' << std::setw(24) << "No of beta steps:" << std::to_string(aModel->GetNoOfBetaSteps()) << '\n'
 				<< std::setw(21) << ' ' << std::setw(24) << "Verbose level:" << std::to_string(aModel->GetVerboseLevel()) << '\n';
 		}
@@ -355,7 +355,7 @@ void RunAction::LoadPrimaryGeneratorData() {
 			"to 'false'";
 		G4Exception("RunAction::LoadPrimaryGeneratorData", "FE_RunAction02", FatalException, err);
 	}
-#endif
+#endif // boostEfficiency
 }
 
 endChR

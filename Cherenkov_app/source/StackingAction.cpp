@@ -17,8 +17,8 @@ beginChR
 
 StackingAction::StackingAction()
 #ifdef boostEfficiency
-	: m_rotationMatrix(G4PhysicalVolumeStore::GetInstance()->GetVolume("radiatorPhys")->GetRotation()->inverse()),
-	m_withGaussSigma(false), m_deltaPhi(180.), m_thetaMin(-DBL_MAX), m_thetaMax(DBL_MAX) {
+: m_rotationMatrix(G4PhysicalVolumeStore::GetInstance()->GetVolume("radiatorPhys")->GetRotation()->inverse()),
+m_withGaussSigma(false), m_deltaPhi(180.), m_thetaMin(-DBL_MAX), m_thetaMax(DBL_MAX) {
 	// taking inverse of the matrix as the G4RotationMatrix implements active transforms
 	p_rindexVector = G4Material::GetMaterial(g_detectorConstruction->GetRadiatorMaterialName())->
 		GetMaterialPropertiesTable()->GetProperty(kRINDEX);
@@ -29,11 +29,9 @@ StackingAction::StackingAction()
 		if (G4ExtraOpticalParameters::GetInstance()->FindChRMatData(aLayerLogic)->m_executeModel == 1)
 			m_withGaussSigma = true;
 	}
-	else {
-		if (G4ExtraOpticalParameters::GetInstance()->FindChRMatData(
+	else if (G4ExtraOpticalParameters::GetInstance()->FindChRMatData(
 			G4LogicalVolumeStore::GetInstance()->GetVolume("radiatorLogic"))->m_executeModel == 1)
-			m_withGaussSigma = true;
-	}
+		m_withGaussSigma = true;
 }
 #else
 {}
@@ -121,16 +119,18 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
 	return fUrgent;
 
   #else // version 0.5 and earlier
-	else {
-		if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") {
-			if (aTrack->GetMomentumDirection().y() <= 0)
-				//Those wouldn't be detected while they would increase the computation time significantly
-				//Due to high refractive index, they would experience total internal reflections
-				return fKill;
-			else
-				return fUrgent;
-		}
+	if (aTrack->GetParticleDefinition()->GetParticleName() == "opticalphoton") {
+		if (aTrack->GetMomentumDirection().y() <= 0)
+			//Those wouldn't be detected while they would increase the computation time significantly
+			//Due to high refractive index, they would experience total internal reflections
+			return fKill;
+		else
+			return fUrgent;
 	}
+	//While the following return ain't perfect, additional particles could only raise the background.
+	//Due to the geometry, the raise in peaks' intensity would be insignificant (I believe).
+	//Yet, those might increase the already long computation times
+	return fKill;
   #endif // boostEfficiency
 #else
   #ifdef captureChRPhotonEnergyDistribution
@@ -152,11 +152,8 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
 		analysisManager->AddNtupleRow();
 	}
   #endif // captureChRPhotonEnergyDistribution
-#endif // standardRun
-	//While the following return ain't perfect, additional particles could only raise the background.
-	//Due to the geometry, the raise in peaks' intensity would be insignificant (I believe).
-	//Yet, those might increase the already long computation times
 	return fKill;
+#endif // standardRun
 }
 
 endChR

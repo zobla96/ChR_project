@@ -41,6 +41,7 @@ public:
 	//=======Get inlines=======
 	[[nodiscard]] inline unsigned char GetVerboseLevel() const;
 private:
+	static std::atomic<size_t> m_noOfDetections;
 	SteppingAction_Messenger* p_steppingMessenger = nullptr;
 	G4RotationMatrix m_rotToDetSystem; //passive rot
 	G4ThreeVector m_trToDetSurfSystem;

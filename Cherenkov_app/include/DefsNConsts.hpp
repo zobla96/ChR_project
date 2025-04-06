@@ -20,8 +20,6 @@
 #include <fstream>
 #include <random>
 
-// Don't want to waste time, so I'm only partially implementing the definition of 'standardRun'.
-// It won't compile into a great application but it will do the job... after all it's an extremely simple app.
 #if 1
 #define standardRun
 // 1 -> standard ChR project with a thin target
@@ -66,11 +64,11 @@ class SteppingAction;
 
 inline DetectorConstruction* g_detectorConstruction = nullptr;
 inline thread_local RunAction* g_runAction = nullptr;
-inline thread_local EventAction* g_eventAction = nullptr;
 inline thread_local PrimaryGeneratorAction* g_primaryGenerator = nullptr;
 inline thread_local StackingAction* g_stackingAction = nullptr;
-inline thread_local TrackingAction* g_trackingAction = nullptr;
 #ifdef standardRun
+inline thread_local EventAction* g_eventAction = nullptr;
+inline thread_local TrackingAction* g_trackingAction = nullptr;
 inline thread_local SteppingAction* g_steppingAction = nullptr;
 #endif // standardRun
 
