@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -13,11 +13,14 @@
 
 beginChR
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //=========public ChR::TrackingAction:: methods=========
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void TrackingAction::PreUserTrackingAction(const G4Track* aTrack) {
-	if (aTrack->GetTrackID() <= g_primaryGenerator->GetParticleGun()->GetNumberOfParticles())
-		m_specificTrackDataMap[aTrack->GetTrackID()] = SpecificTrackData{};
+void TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
+{
+  if (aTrack->GetTrackID() <= g_primaryGenerator->GetParticleGun()->GetNumberOfParticles())
+    fSpecificTrackDataMap[aTrack->GetTrackID()] = SpecificTrackData{};
 }
 
 endChR

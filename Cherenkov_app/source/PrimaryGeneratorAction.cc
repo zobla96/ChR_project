@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -16,42 +16,54 @@
 
 beginChR
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //=========public ChR::PrimaryGeneratorAction:: methods=========
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
-: m_beamSigma(0. * um), m_sinBeamDivergenceTheta(0.), m_zDistance(0.) {
-	// experimental value: m_beamSigma = 536. * um
-	p_theGun = new G4ParticleGun{};
-	p_theGun->SetNumberOfParticles(1);
-	p_theGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle("e-"));
-	p_theGun->SetParticleEnergy(855. * MeV); // the experimental value
-	p_pGeneratorMessenger = new PrimaryGeneratorAction_Messenger{ this };
+: fTheGun(new G4ParticleGun{}),
+  fPGeneratorMessenger(new PrimaryGeneratorAction_Messenger{ this }),
+  fBeamSigma(0. * um),
+  fSinBeamDivergenceTheta(0.),
+  fZDistance(0.)
+{
+
+  // experimental value: fBeamSigma = 536. * um
+  fTheGun->SetNumberOfParticles(1);
+  fTheGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle("e-"));
+  fTheGun->SetParticleEnergy(855. * MeV); // the experimental value
 }
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction() {
-	delete p_theGun;
-	delete p_pGeneratorMessenger;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{
+  delete fTheGun;
+  delete fPGeneratorMessenger;
 }
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
-	G4double x = 0., y = 0.;
-	if (m_beamSigma > 0.) { //by setting m_beamSigma == 0 one can use pencil-like beams
-		x = G4RandGauss::shoot(0., m_beamSigma);
-		y = G4RandGauss::shoot(0., m_beamSigma);
-	}
-	if (m_sinBeamDivergenceTheta > 0.) {
-		G4double phi = G4UniformRand() * CLHEP::twopi;
-		G4double sinTheta;
-		do {
-			sinTheta = m_sinBeamDivergenceTheta * std::sqrt(-2. * std::log(G4UniformRand()));
-		} while (sinTheta > 1.); //this should never happen for some reasonable divergence angles, but just in case!
-		G4double cosTheta = std::sqrt(1. - sinTheta * sinTheta);
-		p_theGun->SetParticleMomentumDirection(G4ThreeVector{ sinTheta * std::cos(phi), sinTheta * std::sin(phi), cosTheta });
-	}
-	else
-		p_theGun->SetParticleMomentumDirection(G4ThreeVector{ 0., 0., 1. });
-	p_theGun->SetParticlePosition(G4ThreeVector{ x, y, -m_zDistance });
-	p_theGun->GeneratePrimaryVertex(anEvent);
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  G4double x = 0., y = 0.;
+  if (fBeamSigma > 0.) { //by setting fBeamSigma == 0 one can use pencil-like beams
+    x = G4RandGauss::shoot(0., fBeamSigma);
+    y = G4RandGauss::shoot(0., fBeamSigma);
+  }
+  if (fSinBeamDivergenceTheta > 0.) {
+    G4double phi = G4UniformRand() * CLHEP::twopi;
+    G4double sinTheta;
+    do {
+      sinTheta = fSinBeamDivergenceTheta * std::sqrt(-2. * std::log(G4UniformRand()));
+    } while (sinTheta > 1.); //this should never happen for some reasonable divergence angles, but just in case!
+    G4double cosTheta = std::sqrt(1. - sinTheta * sinTheta);
+    fTheGun->SetParticleMomentumDirection(G4ThreeVector{ sinTheta * std::cos(phi), sinTheta * std::sin(phi), cosTheta });
+  }
+  else
+    fTheGun->SetParticleMomentumDirection(G4ThreeVector{ 0., 0., 1. });
+  fTheGun->SetParticlePosition(G4ThreeVector{ x, y, -fZDistance });
+  fTheGun->GeneratePrimaryVertex(anEvent);
 }
 
 endChR

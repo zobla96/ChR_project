@@ -1,10 +1,17 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
 //####### Contact: zobla96@gmail.com #######
 //##########################################
+
+/*
+ABOUT THE HEADER
+----------------
+
+UI commands to modify the detector construction.
+*/
 
 #pragma once
 #ifndef DetectorConstruction_Messenger_hh
@@ -24,20 +31,21 @@ beginChR
 
 class DetectorConstruction;
 
-class DetectorConstruction_Messenger final : public G4UImessenger {
+class DetectorConstruction_Messenger final : public G4UImessenger
+{
 public:
-	DetectorConstruction_Messenger(DetectorConstruction*);
-	~DetectorConstruction_Messenger() override;
-	void SetNewValue(G4UIcommand*, G4String) override;
+  DetectorConstruction_Messenger(DetectorConstruction*);
+  ~DetectorConstruction_Messenger() override;
+  void SetNewValue(G4UIcommand*, G4String) override;
 private:
-	DetectorConstruction* p_detectorConstruction = nullptr;
-	G4UIdirectory* p_detectorMessengerDir = nullptr;
-	G4UIcmdWithAString* p_radiatorMaterial = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_radiatorAngle = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_radiatorThickness = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_detectorRadius = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_detectorAngle = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_detectorDistance = nullptr;
+  DetectorConstruction* fDetectorConstruction;
+  G4UIdirectory* fDetectorMessengerDir;
+  G4UIcmdWithAString* fRadiatorMaterial;
+  G4UIcmdWithADoubleAndUnit* fRadiatorAngle;
+  G4UIcmdWithADoubleAndUnit* fRadiatorThickness;
+  G4UIcmdWithADoubleAndUnit* fDetectorRadius;
+  G4UIcmdWithADoubleAndUnit* fDetectorAngle;
+  G4UIcmdWithADoubleAndUnit* fDetectorDistance;
 };
 
 endChR

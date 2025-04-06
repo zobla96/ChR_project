@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -41,23 +41,24 @@ G4OpticalPhysics processes - they are just loaded differently.
 #include "globals.hh"
 
 
-class G4OpticalPhysics_option1 : public G4VPhysicsConstructor {
+class G4OpticalPhysics_option1 : public G4VPhysicsConstructor
+{
 public:
-	G4OpticalPhysics_option1(G4int verbose = 0, const G4String& physicsName = "OpticalPhysics_op1");
-	virtual ~G4OpticalPhysics_option1() override = default;
-	virtual void ConstructParticle() override;
-	virtual void ConstructProcess() override;
+  G4OpticalPhysics_option1(G4int verbose = 0, const G4String& physicsName = "OpticalPhysics_op1");
+  virtual ~G4OpticalPhysics_option1() override = default;
+  virtual void ConstructParticle() override;
+  virtual void ConstructProcess() override;
 protected:
-	//if one wants to change any of the processes, just inherit the class and override specific methods
-	virtual void LoadOpAbsorption();
-	virtual void LoadOpRayleigh();
-	virtual void LoadOpMieHG();
-	virtual void LoadOpBoundaryProcess();
-	virtual void LoadOpWLS();
-	virtual void LoadOpWLS2();
-	virtual void LoadCherenkov();
-	virtual void LoadOpticalTransitionRad(); //for now loads nothing - there's no such a process in Geant4
-	virtual void LoadScintillation();
+  //if one wants to change any of the processes, just inherit the class and override specific methods
+  virtual void LoadOpAbsorption();
+  virtual void LoadOpRayleigh();
+  virtual void LoadOpMieHG();
+  virtual void LoadOpBoundaryProcess();
+  virtual void LoadOpWLS();
+  virtual void LoadOpWLS2();
+  virtual void LoadCherenkov();
+  virtual void LoadOpticalTransitionRad(); //for now loads nothing - there's no such a process in Geant4
+  virtual void LoadScintillation();
 };
 
 #endif // !G4OpticalPhysics_option1_hh

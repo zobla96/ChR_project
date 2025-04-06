@@ -1,10 +1,17 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
 //####### Contact: zobla96@gmail.com #######
 //##########################################
+
+/*
+ABOUT THE HEADER
+----------------
+
+UI command to change the verbose level of the SteppingAction class
+*/
 
 #pragma once
 #ifndef SteppingAction_Messenger_hh
@@ -22,15 +29,16 @@ beginChR
 
 class SteppingAction;
 
-class SteppingAction_Messenger final : public G4UImessenger {
+class SteppingAction_Messenger final : public G4UImessenger
+{
 public:
-	SteppingAction_Messenger(SteppingAction*);
-	~SteppingAction_Messenger() override;
-	void SetNewValue(G4UIcommand*, G4String) override;
+  SteppingAction_Messenger(SteppingAction*);
+  ~SteppingAction_Messenger() override;
+  void SetNewValue(G4UIcommand*, G4String) override;
 private:
-	SteppingAction* p_steppingAction = nullptr;
-	G4UIdirectory* p_stepActionDir = nullptr;
-	G4UIcmdWithAnInteger* p_verboseLevel = nullptr;
+  SteppingAction* fSteppingAction;
+  G4UIdirectory* fStepActionDir;
+  G4UIcmdWithAnInteger* fVerboseLevel;
 };
 
 endChR

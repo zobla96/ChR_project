@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -14,33 +14,43 @@
 
 beginChR
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //=========public ChR::SteppingAction_Messenger:: methods=========
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SteppingAction_Messenger::SteppingAction_Messenger(SteppingAction* stepStep)
-: p_steppingAction(stepStep) {
-	p_stepActionDir = new G4UIdirectory{ "/ChR_project/SteppingAction/" };
-	p_stepActionDir->SetGuidance("All commands related to user stepping action");
+: fSteppingAction(stepStep),
+  fStepActionDir(new G4UIdirectory{ "/ChR_project/SteppingAction/" }),
+  fVerboseLevel(new G4UIcmdWithAnInteger{ "/ChR_project/SteppingAction/verboseLevel", this })
+{
 
-	p_verboseLevel = new G4UIcmdWithAnInteger{ "/ChR_project/SteppingAction/verboseLevel", this };
-	p_verboseLevel->SetGuidance("Used to change verboseLevel of the SteppingAction class.");
-	p_verboseLevel->SetParameterName("verboseLevel", true);
-	p_verboseLevel->SetDefaultValue(1);
-	p_verboseLevel->SetRange("verboseLevel>=0");
-	p_verboseLevel->SetToBeBroadcasted(true);
-	p_verboseLevel->AvailableForStates(G4State_Idle);
+  fStepActionDir->SetGuidance("All commands related to user stepping action");
+
+  fVerboseLevel->SetGuidance("Used to change verboseLevel of the SteppingAction class.");
+  fVerboseLevel->SetParameterName("verboseLevel", true);
+  fVerboseLevel->SetDefaultValue(1);
+  fVerboseLevel->SetRange("verboseLevel>=0");
+  fVerboseLevel->SetToBeBroadcasted(true);
+  fVerboseLevel->AvailableForStates(G4State_Idle);
 }
 
-SteppingAction_Messenger::~SteppingAction_Messenger() {
-	delete p_stepActionDir;
-	delete p_verboseLevel;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SteppingAction_Messenger::~SteppingAction_Messenger()
+{
+  delete fStepActionDir;
+  delete fVerboseLevel;
 }
 
-void SteppingAction_Messenger::SetNewValue(G4UIcommand* uiCmd, G4String aStr) {
-	if (uiCmd == p_verboseLevel) {
-		p_steppingAction->SetVerboseLevel(p_verboseLevel->ConvertToInt(aStr));
-	}
-	else // just in case of some bug, but it can be removed
-		G4Exception("SteppingAction_Messenger::SetNewValue", "FE_StepActionMessenger01", FatalException, "Command not found!\n");
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SteppingAction_Messenger::SetNewValue(G4UIcommand* uiCmd, G4String aStr)
+{
+  if (uiCmd == fVerboseLevel) {
+    fSteppingAction->SetVerboseLevel(fVerboseLevel->ConvertToInt(aStr));
+  }
+  else // just in case of some bug, but it can be removed
+    G4Exception("SteppingAction_Messenger::SetNewValue", "FE_StepActionMessenger01", FatalException, "Command not found!\n");
 }
 
 endChR

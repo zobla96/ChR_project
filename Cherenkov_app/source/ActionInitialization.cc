@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -16,27 +16,33 @@
 
 beginChR
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //=========public ChR::ActionInitialization:: methods=========
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void ActionInitialization::BuildForMaster() const {
-	g_runAction = new RunAction{};
-	SetUserAction(g_runAction);
+void ActionInitialization::BuildForMaster() const
+{
+  g_runAction = new RunAction{};
+  SetUserAction(g_runAction);
 }
 
-void ActionInitialization::Build() const {
-	g_runAction = new RunAction{};
-	SetUserAction(g_runAction);
-	g_primaryGenerator = new PrimaryGeneratorAction{};
-	SetUserAction(g_primaryGenerator);
-	g_stackingAction = new StackingAction{};
-	SetUserAction(g_stackingAction);
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void ActionInitialization::Build() const
+{
+  g_runAction = new RunAction{};
+  SetUserAction(g_runAction);
+  g_primaryGenerator = new PrimaryGeneratorAction{};
+  SetUserAction(g_primaryGenerator);
+  g_stackingAction = new StackingAction{};
+  SetUserAction(g_stackingAction);
 #ifdef boostEfficiency
-	g_trackingAction = new TrackingAction{};
-	SetUserAction(g_trackingAction);
+  g_trackingAction = new TrackingAction{};
+  SetUserAction(g_trackingAction);
 #endif // boostEfficiency
 #ifdef standardRun
-	g_steppingAction = new SteppingAction{};
-	SetUserAction(g_steppingAction);
+  g_steppingAction = new SteppingAction{};
+  SetUserAction(g_steppingAction);
 #endif // standardRun
 
 }

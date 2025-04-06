@@ -1,10 +1,19 @@
 ﻿//##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
 //####### Contact: zobla96@gmail.com #######
 //##########################################
+
+/*
+ABOUT THE HEADER
+----------------
+
+Initialize all needed UserAction classes. Pointers to most of such objects
+are saved as global pointers accessible via different threads - see the
+'DefsNConstants.hh' header.
+*/
 
 #pragma once
 #ifndef ActionInitialization_hh
@@ -17,12 +26,13 @@
 
 beginChR
 
-class ActionInitialization final : public G4VUserActionInitialization {
+class ActionInitialization final : public G4VUserActionInitialization
+{
 public:
-	ActionInitialization() = default;
-	~ActionInitialization() override = default;
-	void BuildForMaster() const override;
-	void Build() const override;
+  ActionInitialization() = default;
+  ~ActionInitialization() override = default;
+  void BuildForMaster() const override;
+  void Build() const override;
 };
 
 endChR

@@ -1,10 +1,17 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
 //####### Contact: zobla96@gmail.com #######
 //##########################################
+
+/*
+ABOUT THE HEADER
+----------------
+
+UI commands for the primary generator
+*/
 
 #pragma once
 #ifndef PrimaryGeneratorAction_Messenger_hh
@@ -22,16 +29,17 @@ beginChR
 
 class PrimaryGeneratorAction;
 
-class PrimaryGeneratorAction_Messenger final : public G4UImessenger {
+class PrimaryGeneratorAction_Messenger final : public G4UImessenger
+{
 public:
-	PrimaryGeneratorAction_Messenger(PrimaryGeneratorAction*);
-	~PrimaryGeneratorAction_Messenger() override;
-	void SetNewValue(G4UIcommand*, G4String) override;
+  PrimaryGeneratorAction_Messenger(PrimaryGeneratorAction*);
+  ~PrimaryGeneratorAction_Messenger() override;
+  void SetNewValue(G4UIcommand*, G4String) override;
 private:
-	PrimaryGeneratorAction* p_primaryGenerator = nullptr;
-	G4UIdirectory* p_pGeneratorMessengerDir = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_beamSigma = nullptr;
-	G4UIcmdWithADoubleAndUnit* p_divSigma = nullptr;
+  PrimaryGeneratorAction* fPrimaryGenerator;
+  G4UIdirectory* fPGeneratorMessengerDir;
+  G4UIcmdWithADoubleAndUnit* fBeamSigma;
+  G4UIcmdWithADoubleAndUnit* fDivSigma;
 };
 
 endChR

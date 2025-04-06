@@ -1,5 +1,5 @@
 //##########################################
-//#######        VERSION 1.0.0       #######
+//#######        VERSION 1.1.0       #######
 //#######    Used: Geant4 v11.1 MT   #######
 //#######   Tested on MSVC compiler  #######
 //#######    Author: Djurnic Blazo   #######
@@ -21,12 +21,13 @@ that can be applied for different study cases.
 
 #include "G4OpticalPhysics_option1.hh"
 
-class G4OpticalPhysics_option2 : public G4OpticalPhysics_option1 {
+class G4OpticalPhysics_option2 : public G4OpticalPhysics_option1
+{
 public:
-	G4OpticalPhysics_option2(G4int verbose = 0, const G4String& physicsName = "OpticalPhysics_op2");
-	virtual ~G4OpticalPhysics_option2() override = default;
+  G4OpticalPhysics_option2(G4int verbose = 0, const G4String& physicsName = "OpticalPhysics_op2");
+  virtual ~G4OpticalPhysics_option2() override = default;
 protected:
-	virtual void LoadCherenkov() override;
+  virtual void LoadCherenkov() override;
 };
 
 #endif // !G4OpticalPhysics_option2_hh
