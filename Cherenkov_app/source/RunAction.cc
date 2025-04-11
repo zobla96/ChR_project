@@ -221,29 +221,41 @@ void RunAction::PrepareRunData()
   if (!g_throwErrorForNonDefault)
     return;
   const PhysicsList* physList = dynamic_cast<const PhysicsList*>(G4RunManager::GetRunManager()->GetUserPhysicsList());
-  if (g_detectorConstruction->GetRadiatorThickness() > 100. * um ||
-    g_detectorConstruction->GetDetectorRadius() > 35. * um ||
-    g_detectorConstruction->GetDetectorDistance() < 37.6 * cm ||
+  if (g_detectorConstruction->GetRadiatorThickness() - 100. * um > 1.e-12 * um ||
+    g_detectorConstruction->GetDetectorRadius() - 35. * um > 1.e-12 * um ||
+    g_detectorConstruction->GetDetectorDistance() - 37.6 * cm < -1.e-12 * um ||
     g_primaryGenerator->GetParticleGun()->GetParticleDefinition()->GetParticleName() != "e-" ||
-    g_primaryGenerator->GetBeamSigma() > 600. * um ||
-    g_primaryGenerator->GetDivSigma() > 0. ||
-    g_primaryGenerator->GetParticleGun()->GetParticleEnergy() < 855. * MeV ||
-    physList->GetRadiatorRangeCuts_gamma() != 1000. * um ||
-    physList->GetRadiatorRangeCuts_electron() != 1000. * um ||
-    physList->GetRadiatorRangeCuts_positron() != 1000. * um ||
-    physList->GetRadiatorRangeCuts_proton() != 1000. * um) {
+    g_primaryGenerator->GetBeamSigma() - 600. * um > 1.e-12 * um ||
+    g_primaryGenerator->GetDivSigma() > 1.e-12 ||
+    g_primaryGenerator->GetParticleGun()->GetParticleEnergy() - 855. * MeV > 1.e-12 * MeV ||
+    std::abs(physList->GetRadiatorRangeCuts_gamma() - 1000. * um) > 1.e-12 * um ||
+    std::abs(physList->GetRadiatorRangeCuts_electron() - 1000. * um) > 1.e-12 * um ||
+    std::abs(physList->GetRadiatorRangeCuts_positron() - 1000. * um) > 1.e-12 * um ||
+    std::abs(physList->GetRadiatorRangeCuts_proton() - 1000. * um) > 1.e-12 * um) {
 
-    const char* err = "You want to use non-default parameters while haven't disabled\n"
+    const char* err =
+      "You want to use non-default parameters while haven't disabled\n"
       "the 'boostEfficiency' definition. That can be dangerous because\n"
       "of the StackingAction class which directs and modifies produced\n"
       "Cherenkov photons (to fly towards the detector). While that is\n"
       "beneficial, make sure that you change the emission angle accordingly\n"
-      "and to read check what the principle is so you wouldn't obtain\n"
-      "invalid results. On the other hand, the application execution\n"
-      "has stopped just so you would have noticed this message. On the\n"
-      "other hand, if you are aware of the risks and still want to proceed\n"
-      "change the 'g_throwErrorForNonDefault' flag in 'DefsNConsts.hh'\n"
-      "to 'false'";
+      "and to read the comments in the 'StackingAction.cc' file. The\n"
+      "'boostEfficiency' definition enables using the most basic principles\n"
+      "of importance sampling.\n"
+      "On the other hand, the application execution has stopped just so you\n"
+      "would have noticed this message. If you are aware of the risks,\n"
+      "have read the comments and still want to proceed, change the \n"
+      "'g_throwErrorForNonDefault' flag in 'DefsNConsts.hh' to 'false'.\n"
+      "Otherwise, undefine 'boostEfficiency' in the 'DefsNConsts.hh' header.\n"
+      "The experimental values are:\n"
+      "Radiator thickness: 200  um (half-thickness: 100 um)\n"
+      "Radiator angle:     22.0/22.5/23.0/23.5/24.0 deg\n"
+      "Detector radius:    35   um\n"
+      "Detector distance:  37.6 cm\n"
+      "Particles:          e-\n"
+      "Beam Gauss sigma:   536  um\n"
+      "Particle energy:    855  MeV\n"
+      "+ the default cut values are used, i.e., 1000 um.";
     G4Exception("RunAction::LoadPrimaryGeneratorData", "FE_RunAction02", FatalException, err);
   }
 #endif
